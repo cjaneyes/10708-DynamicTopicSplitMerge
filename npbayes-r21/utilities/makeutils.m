@@ -1,8 +1,10 @@
 
 cd utilities
 try
-  mex randgamma.c  -lm % add debugging options? -DDEBUG??
-  mex randnumtable.c -lm
-catch
+  mex randgamma.c
+  mex randnumtable.c
+catch ME
+    cd ..
+    rethrow(ME);
 end
 cd ..
