@@ -2,7 +2,27 @@
 #define RANDUTILS
 #include "mex.h"
 #include <math.h>
+#ifdef _WIN32
+
+#define _CRT_RAND_S
 #include <stdlib.h>
+
+double drand48()
+{
+/*
+ Returns a random number in [0.0, 1.0)
+ http://man7.org/linux/man-pages/man3/drand48.3.html
+*/
+	unsigned ui;
+	rand_s(&ui);
+	return (double)ui / ((double)UINT_MAX + 1);
+}
+
+#else
+
+#include <stdlib.h>
+
+#endif
 
 double randgamma(double rr) {
   double aa, bb, cc, dd;
