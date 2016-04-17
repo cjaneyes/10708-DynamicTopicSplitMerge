@@ -1,11 +1,11 @@
-function func = hdpMultinomial_func;
+function func = ourf_bundle_func
 
-func.iterate   = @hdpMultinomial_iterate;
-func.predict   = @hdpMultinomial_predict;
-func.numitems  = @Multinomial_numitems;
-func.newclass  = @Multinomial_newclass;
-func.additem   = @Multinomial_additem;
-func.additems  = @Multinomial_additems;
-func.delitem   = @Multinomial_delitem;
-func.delitems  = @Multinomial_delitems;
+func.iterate   = @hdp_ourf_iterate;
+func.predict   = [];
+func.numitems  = @ourf_numitems;
+func.newclass  = @ourf_newclass;
+func.additem   = @ourf_additem;
+func.additems  = @ourf_additems;
+func.delitem   = @ourf_delitem;
+func.delitems  = @ourf_delitems;
 
