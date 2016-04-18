@@ -565,6 +565,12 @@ void hdp_iterate(HDP *hdp, double *iterlik,
 		for (jj = 0; jj < numdp; jj++)
 		{
 			if (dpstate[jj] == ACTIVE) hdp_randbeta(hdp, jj);
+			/*
+			if (hdp->ppindex[jj] == -1)
+			// G0
+				hdp_randbeta(hdp, jj);
+			else hdp_randbetat(hdp, jj);
+			*/
 		}
 
 		/* delete empty classes, only after randclassnt, randbeta for consistency */
