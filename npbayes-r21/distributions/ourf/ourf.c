@@ -25,7 +25,7 @@ double marglikelihood(HH hh, QQ qq, SS ss)
 	return log((hh.eta[ss] + qq[ss]) / (hh.eta[0] + qq[0]));
 }
 
-double marglikelihoods(double *clik, HH hh, int num_topic, QQ *qq, int num_vocab)
+double marglikelihoods(double *clik, HH hh, int num_topic, QQ qq, int num_vocab)
 {
 	/*double etas, eta0;
 	int ii;
@@ -34,6 +34,8 @@ double marglikelihoods(double *clik, HH hh, int num_topic, QQ *qq, int num_vocab
 	for (ii = 0; ii < numqq; ii++)
 		clik[ii] = (etas + qq[ii][ss]) / (eta0 + qq[ii][0]);
      */
+    
+    //return P(x_i^t | Z_i^t = k, x_{-i}^t), it is an array of size num_topic, indexed by cc, in paper indexed by k
     for(int cc = 0;cc < num_topic;cc++)
     {
         double res = 0;
