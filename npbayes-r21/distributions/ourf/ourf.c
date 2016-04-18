@@ -96,8 +96,7 @@ QQ newclass(HH hh)
 	int ii;
 	QQ result;
 	result = mxMalloc(sizeof(int)*(hh.numdim + 1));
-	for (ii = 0; ii <= hh.numdim; ii++)
-		result[ii] = 0;
+	memset(result, 0, sizeof(int)*(hh.numdim + 1));
 	return result;
 }
 
@@ -114,9 +113,11 @@ SS *mxReadSSVector(const mxArray *mvector)
 	result = mxMalloc(sizeof(SS)*n);
 	for (j = 0; j < n; j++)
 	{
-		result[j] = mxMalloc(sizeof(int)*m);
-		for (i = 0; i < m; i++)
-			result[j][i] = pr[l++];
+		int sum = 0;
+		result[j] = mxMalloc(sizeof(int)*(m + 1));
+		for (i = 1; i <= m; i++)
+			sum += (result[j][i] = pr[l++]);
+		result[j][0] = sum;
 	}
 	return result;
 }
@@ -165,7 +166,7 @@ void mxFreeHH(HH hh)
 QQ *mxReadQQVector(HH hh, const mxArray *marray, int maxnum)
 {
 	double *pr;
-	int ii, jj, mm, nn, sum;
+	int ii, jj, mm, nn, sum, l = 0;
 	QQ *result;
 	mm = mxGetM(marray);
 	nn = mxGetN(marray);
@@ -177,10 +178,8 @@ QQ *mxReadQQVector(HH hh, const mxArray *marray, int maxnum)
 	{
 		result[jj] = newclass(hh);
 		sum = 0;
-		for (ii = 0; ii < mm; ii++)
-		{
-			sum += result[jj][ii + 1] = pr[ii + jj*mm];
-		}
+		for (ii = 1; ii <= mm; ii++)
+			sum += (result[jj][ii] = pr[l++]);
 		result[jj][0] = sum;
 	}
 	for (jj = nn; jj < maxnum; jj++)
@@ -192,14 +191,14 @@ mxArray *mxWriteQQVector(HH hh, int nn, int maxnum, QQ *qq)
 {
 	mxArray *result;
 	double *pr;
-	int ii, jj;
+	int ii, jj, l = 0;
 	result = mxCreateDoubleMatrix(hh.numdim, nn, mxREAL);
 	pr = mxGetPr(result);
 	mxdebug2(3, "Write qq (%dx%d): ", hh.numdim, nn);
 	for (jj = 0; jj < nn; jj++)
 	{
-		for (ii = 0; ii < hh.numdim; ii++)
-			pr[ii + jj*hh.numdim] = qq[jj][ii + 1];
+		for (ii = 1; ii <= hh.numdim; ii++)
+			pr[l++] = qq[jj][ii];
 		mxFree(qq[jj]);
 		mxdebug1(4, "%d ", jj);
 	}
