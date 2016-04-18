@@ -1,5 +1,6 @@
 HDP Code:
 http://www.cs.berkeley.edu/~jordan/hdp/
+Version 2
 
 Dataset:
 https://aminer.org/DBLP_Citation
