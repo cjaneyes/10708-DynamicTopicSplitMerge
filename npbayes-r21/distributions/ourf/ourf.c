@@ -25,7 +25,7 @@ double marglikelihood(HH hh, QQ qq, SS ss)
 	return log((hh.eta[ss] + qq[ss]) / (hh.eta[0] + qq[0]));
 }
 
-double marglikelihoods(double *clik, HH hh, int num_topic, QQ qq, int num_vocab)
+double marglikelihoods(double *clik, HH hh, int num_topic, QQ* qq, SS ss)
 {
 	/*double etas, eta0;
 	int ii;
@@ -39,10 +39,10 @@ double marglikelihoods(double *clik, HH hh, int num_topic, QQ qq, int num_vocab)
     for(int cc = 0;cc < num_topic;cc++)
     {
         double res = 0;
-        res -= lgamma(hh.eta[0] + qq[0]);
+        res -= lgamma(hh.eta[0] + qq[cc][0]);
         for(int w = 0;w < num_vocab;w++)
         {
-            res += lgamma(hh.eta[w]+qq[k]);
+            res += lgamma(hh.eta[w]+qq[cc][w]);
         }
         clik[cc] = res;
     }
