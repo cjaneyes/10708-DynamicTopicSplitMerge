@@ -63,6 +63,6 @@ trainss{1} = ourdata;
 
 
 [hdp, sample, lik] = hdp_ourf(hh,[1 1],[1 1],15,...
-    trainss,1000,10,100,15,1);
+    trainss,1000,10,100,15);
 
 
