@@ -16,7 +16,7 @@ int main(int argc, char* argv[])
 	ifstream ifs(filename);
 	if (!ifs)
 		return 0;
-	string content((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
+	string content((istreambuf_iterator<char>(ifs)), istreambuf_iterator<char>());
 	ifs.close();
 	int year, yearl = atoi(argv[3]), yearr = atoi(argv[4]);
 	size_t ny = yearr - yearl + 1;
@@ -41,8 +41,7 @@ int main(int argc, char* argv[])
 			bool bWant = false;
 			for (auto p = pos; p < len; p++)
 				if (content[p] == '#' && p + 1 < len && content[p + 1] == '!')
-				{
-					// find wanted document
+				{ // find wanted document
 					bWant = true;
 					posn = p + 2;
 				}
@@ -67,6 +66,5 @@ int main(int argc, char* argv[])
 		ofs << extract[i];
 		ofs.close();
 	}
-
 	return 0;
 }
