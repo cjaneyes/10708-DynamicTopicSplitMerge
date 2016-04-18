@@ -24,29 +24,36 @@ int main(int argc, char* argv[])
 	vector<string> extract(ny);
 	for (auto &ey : extract)
 		ey.reserve(prealloc);
-	size_t pos = 0, posn, posnn;
+	size_t pos = 0, posn, posnn, len = content.length();
 	posn = content.find("\n", pos);
 	int ndoc = atoi(content.substr(pos, posn - pos).c_str());
 	size_t cdoc = 0;
 	while (1)
 	{
-		if (cdoc == 10000)
-			break;
 		posn = content.find("#year", pos);
 		if (posn == string::npos)
 			break;
 		pos = posn + 9;
 		cdoc++;
-		bool bWant = false;
 		year = atoi(content.substr(posn + 5, 4).c_str());
 		if (year >= yearl && year <= yearr)
 		{
-			posn = content.find("#!", pos);
-			posnn = content.find("\n\n", pos);
-			if (posn != string::npos && posn < posnn)
-				// find wanted document
-				extract[year - yearl].append(content.substr(posn + 2, posnn - posn - 2) + '\n');
-			pos = __max(posn, posnn) + 2;
+			bool bWant = false;
+			for (auto p = pos; p < len; p++)
+				if (content[p] == '#' && p + 1 < len && content[p + 1] == '!')
+				{
+					// find wanted document
+					bWant = true;
+					posn = p + 2;
+				}
+				else if (content[p] == '\n' && p + 1 < len && content[p + 1] == '\n')
+				{
+					posnn = p;
+					break;
+				}
+			if (bWant)
+				extract[year - yearl].append(content.substr(posn, posnn - posn) + '\n');
+			pos = posnn + 2;
 		}
 		if (!(cdoc % 1000))
 			cout << double (cdoc) / ndoc * 100 << "%\n";
@@ -56,9 +63,9 @@ int main(int argc, char* argv[])
 	{
 		char fname[20];
 		sprintf(fname, "/%u.txt", i + yearl);
-		ofstream out(outfolder + fname);
-		out << extract[i];
-		out.close();
+		ofstream ofs(outfolder + fname);
+		ofs << extract[i];
+		ofs.close();
 	}
 
 	return 0;
