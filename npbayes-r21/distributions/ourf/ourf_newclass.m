@@ -1,3 +1,3 @@
-function qq = newclass(hh);
+function qq = ourf_newclass(hh)
 
-qq = zeros(size(hh));
+qq = zeros(length(hh), 1);

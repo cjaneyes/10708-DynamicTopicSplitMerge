@@ -1,7 +1,7 @@
 %% Compile
 
-bRecompile = 0; 
-bDebugMex = 1;
+bRecompile = 1; 
+bDebugMex = 0;
 
 if bRecompile || exist('hdp_ourf_iterate') ~= 3 %#ok<EXIST> % 3 means MEX function
     addpath distributions/ourf;
@@ -55,9 +55,9 @@ trainss{1} = ourdata;
 %% Setup parameters
 
 % iterations and sample extraction
-numburnin   = 1000;
-numsample   = 10;
-numinterval = 100;
+numburnin   = 10;
+numsample   = 2;
+numinterval = 5;
 
 % whether to sample concentration parameters:
 %    If doconparam>0 then also samples concentration
@@ -67,6 +67,7 @@ doconparam = 15;
 % common vague gamma prior for all concentration parameters
 alphaa = 1;
 alphab = 1;
+% if sampling is not used, alpha = alphaa / alphab
 
 % H for G0
 hh = ones(mn(2), 1);

@@ -26,7 +26,7 @@ double marglikelihood(HH hh, QQ qq, SS ss)
     return 0;
 }
 
-double marglikelihoods(double *clik, HH hh, int num_topic, QQ* qq, SS ss)
+double marglikelihoods(double *clik, HH hh, int num_topic, QQ *qq, SS ss)
 {
 	/*double etas, eta0;
 	int ii;
