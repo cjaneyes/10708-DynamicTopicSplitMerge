@@ -36,10 +36,23 @@ end
 
 %% Read preprocessed data
 
-hh = ones(25, 1)/5;
-load ourdata trainss testss;
+nYear = 2;
+startYear = 1995;
+
+trainss = cell(nYear, 1);
+for y = 1:nYear
+    fname = ['year' num2str(startYear + y - 1)];
+    mn = load(['../data/' fname '.meta']);
+    ijv = load(['../data/' fname '.sparse']);
+    trainss{y} = full(sparse(ijv(:, 2), ijv(:, 1), ijv(:, 3), mn(2), mn(1)));
+end
+
+% concatenate just for now
+trainss = [trainss{:}];
 
 %% Setup parameters
+
+hh = ones(mn(2), 1);
 
 %% Sampling
 
