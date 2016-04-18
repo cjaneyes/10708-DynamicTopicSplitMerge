@@ -1,6 +1,6 @@
 %% Compile
 
-bRecompile = 1; 
+bRecompile = 0; 
 bDebugMex = 1;
 
 if bRecompile || exist('hdp_ourf_iterate') ~= 3 %#ok<EXIST> % 3 means MEX function
@@ -39,16 +39,16 @@ end
 nYear = 2;
 startYear = 1995;
 
-trainss = cell(nYear, 1);
+ourdata = cell(nYear, 1);
 for y = 1:nYear
     fname = ['year' num2str(startYear + y - 1)];
     mn = load(['../data/' fname '.meta']);
     ijv = load(['../data/' fname '.sparse']);
-    trainss{y} = full(sparse(ijv(:, 2), ijv(:, 1), ijv(:, 3), mn(2), mn(1)));
+    ourdata{y} = full(sparse(ijv(:, 2), ijv(:, 1), ijv(:, 3), mn(2), mn(1)));
 end
 
 % concatenate just for now
-trainss = [trainss{:}];
+ourdata = [ourdata{:}];
 
 %% Setup parameters
 
@@ -57,6 +57,10 @@ hh = ones(mn(2), 1);
 %% Sampling
 
 % run testbars first to get the data for now
+
+trainss = cell(1);
+trainss{1} = ourdata;
+
 
 [hdp, sample, lik] = hdp_ourf(hh,[1 1],[1 1],15,...
     trainss,1000,10,100,15,1);

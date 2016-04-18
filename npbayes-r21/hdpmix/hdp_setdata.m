@@ -1,4 +1,4 @@
-function hdp = hdp_setdata(hdp,dpindex,datass);
+function hdp = hdp_setdata(hdp,dpindex,datass)
 
 if nargin==2
   datass  = dpindex;
