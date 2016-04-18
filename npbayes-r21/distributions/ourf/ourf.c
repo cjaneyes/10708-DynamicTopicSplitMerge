@@ -40,9 +40,10 @@ double marglikelihoods(double *clik, HH hh, int num_topic, QQ* qq, SS ss)
     int num_vocab = hh.numdim;
     for(int cc = 0;cc < num_topic;cc++)
     {
+        double res;
         if(cc == num_topic-1) //compute f_new
         {
-            double res = (-1) * lgamma(hh.eta[0] + ss[0]);
+            res = (-1) * lgamma(hh.eta[0] + ss[0]);
             for(int w = 1; w <= num_vocab;w++)
             {
                 res += lgamma(hh.eta[w]+ss[w]);
@@ -50,7 +51,7 @@ double marglikelihoods(double *clik, HH hh, int num_topic, QQ* qq, SS ss)
         }
         else
         {
-            double res = num_topic * lgamma(hh.eta[0]);
+            res = num_topic * lgamma(hh.eta[0]);
             res -= lgamma(hh.eta[0] + qq[cc][0] + ss[0]);
             for(int w = 1;w <= num_vocab;w++)
             {
