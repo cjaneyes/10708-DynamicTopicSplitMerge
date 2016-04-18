@@ -49,20 +49,34 @@ end
 
 % concatenate just for now
 ourdata = [ourdata{:}];
-
-%% Setup parameters
-
-hh = ones(mn(2), 1);
-
-%% Sampling
-
-% run testbars first to get the data for now
-
 trainss = cell(1);
 trainss{1} = ourdata;
 
+%% Setup parameters
 
-[hdp, sample, lik] = hdp_ourf(hh,[1 1],[1 1],15,...
-    trainss,1000,10,100,15);
+% iterations and sample extraction
+numburnin   = 1000;
+numsample   = 10;
+numinterval = 100;
+
+% whether to sample concentration parameters:
+%    If doconparam>0 then also samples concentration
+%    parameters, for doconparam number of iterations each time.
+doconparam = 15;
+
+% common vague gamma prior for all concentration parameters
+alphaa = 1;
+alphab = 1;
+
+% H for G0
+hh = ones(mn(2), 1);
+
+% expected number of classes/mixtures/topics
+numclass = 15;
+
+%% Sampling
+
+[hdp, sample, lik] = hdp_ourf(hh, alphaa, alphab, numclass, ...
+    trainss, numburnin, numsample, numinterval, doconparam);
 
 
