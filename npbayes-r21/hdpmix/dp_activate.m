@@ -1,4 +1,4 @@
-function hdp = dp_activate(hdp,dpindex,initcc);
+function hdp = dp_activate(hdp,dpindex,initcc)
 
 check_dpindex(hdp.numdp,dpindex);
 
@@ -7,7 +7,7 @@ FROZEN  = 1;
 HELDOUT = 0;
 
 % initialize numclass and classqq
-if ischar(initcc) & strcmp(initcc,'1perdp')
+if ischar(initcc) && strcmp(initcc,'1perdp')
   oldclass = hdp.base.numclass;
   hdp = qq_addclass(hdp,length(dpindex));
 elseif iscell(initcc)

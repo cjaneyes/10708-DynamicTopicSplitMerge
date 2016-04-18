@@ -33,7 +33,6 @@ load ourdata trainss testss;
 
 % run testbars first to get the data for now
 
-tic;
 [hdp, sample, lik] = hdp_ourf(hh,[1 1],[1 1],15,...
     trainss,1000,10,100,15,1);
 

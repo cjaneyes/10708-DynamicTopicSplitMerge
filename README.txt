@@ -8,7 +8,12 @@ https://aminer.org/DBLP_Citation
 Notation table:
 hh: base distribution of size (H x 1)
 
+Sampling scheme:
 
+First run 'numburnin' iterations and then take one sample every other 'numspace' iterations
+until we have 'numsample' samples.
+Thus the total number of iterations is:
+totiter = numburnin + numsample*numspace
 
 hdp.func          = func; % operations for F
 hdp.numdp         = length(ppindex); % # of DP s

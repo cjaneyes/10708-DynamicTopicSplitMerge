@@ -1,4 +1,4 @@
-function [hdp,dpindex] = hdp_adddp(hdp,numdp,pp,cp);
+function [hdp,dpindex] = hdp_adddp(hdp,numdp,pp,cp)
 
 HELDOUT = 0;
 
