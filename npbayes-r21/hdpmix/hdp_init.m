@@ -1,4 +1,4 @@
-function hdp = hdp_init(func,ppindex,cpindex,hh,alphaa,alphab);
+function hdp = hdp_init(func,ppindex,cpindex,hh,alphaa,alphab)
 
 check_ppindex(length(ppindex),ppindex);
 check_cpindex(max(cpindex),cpindex);
