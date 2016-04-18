@@ -11,7 +11,7 @@ typedef struct
 	double *eta;
 } HH;
 
-typedef int SS;
+typedef int* SS;
 
 typedef int* QQ;
 
@@ -22,7 +22,8 @@ int numitems(QQ qq)
 
 double marglikelihood(HH hh, QQ qq, SS ss)
 {
-	return log((hh.eta[ss] + qq[ss]) / (hh.eta[0] + qq[0]));
+	//return log((hh.eta[ss] + qq[ss]) / (hh.eta[0] + qq[0]));
+    return 0;
 }
 
 double marglikelihoods(double *clik, HH hh, int num_topic, QQ* qq, SS ss)
@@ -36,13 +37,25 @@ double marglikelihoods(double *clik, HH hh, int num_topic, QQ* qq, SS ss)
      */
     
     //return P(x_i^t | Z_i^t = k, x_{-i}^t), it is an array of size num_topic, indexed by cc, in paper indexed by k
+    int num_vocab = hh.numdim;
     for(int cc = 0;cc < num_topic;cc++)
     {
-        double res = 0;
-        res -= lgamma(hh.eta[0] + qq[cc][0]);
-        for(int w = 0;w < num_vocab;w++)
+        if(cc == num_topic-1) //compute f_new
         {
-            res += lgamma(hh.eta[w]+qq[cc][w]);
+            double res = (-1) * lgamma(hh.eta[0] + ss[0]);
+            for(int w = 1; w <= num_vocab;w++)
+            {
+                res += lgamma(hh.eta[w]+ss[w]);
+            }
+        }
+        else
+        {
+            double res = num_topic * lgamma(hh.eta[0]);
+            res -= lgamma(hh.eta[0] + qq[cc][0] + ss[0]);
+            for(int w = 1;w <= num_vocab;w++)
+            {
+                res += lgamma(hh.eta[w]+qq[cc][w] + ss[w]) - lgamma(hh.eta[w]);
+            }
         }
         clik[cc] = res;
     }
@@ -51,19 +64,30 @@ double marglikelihoods(double *clik, HH hh, int num_topic, QQ* qq, SS ss)
 
 void adddata(HH hh, QQ qq, SS ss)
 {
-	qq[ss] ++;
-	qq[0] ++;
+	//qq[ss] ++;
+	//qq[0] ++;
+    int num_vocab = hh.numdim;
+    for(int w = 0; w <= num_vocab;w++)
+    {
+        qq[w] += ss[w];
+    }
 }
 
 double adddatalik(HH hh, QQ qq, SS ss)
 {
-	return log((hh.eta[ss] + (qq[ss] ++)) / (hh.eta[0] + (qq[0] ++)));
+	//return log((hh.eta[ss] + (qq[ss] ++)) / (hh.eta[0] + (qq[0] ++)));
+    return 0;
 }
 
 void deldata(HH hh, QQ qq, SS ss)
 {
-	qq[ss] --;
-	qq[0] --;
+	//qq[ss] --;
+	//qq[0] --;
+    int num_vocab = hh.numdim;
+    for(int w = 0; w <= num_vocab;w++)
+    {
+        qq[w] -= ss[w];
+    }
 }
 
 QQ newclass(HH hh)
