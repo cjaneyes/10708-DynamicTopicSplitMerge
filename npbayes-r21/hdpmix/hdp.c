@@ -44,7 +44,7 @@
  *              Activates DP jj.  Assumes parent is already activates.
  *              Otherwise crashes.
  * void hdp_dpholdout(HDP *hdp, int jj)
- *              Holds out DP jj.  Assumes parent is activated.
+ *              Holds ofs DP jj.  Assumes parent is activated.
  *              Otherwise crashes.
  * void hdp_iterate(HDP *hdp, double *iterlik, int numiter, int doconparam,
  *     int dolik)
@@ -668,7 +668,7 @@ void hdp_dpholdout(HDP *hdp, int jj)
 
 	int cc, ii;
 
-	mxdebug1(1, "Holding out DP %d.\n", jj);
+	mxdebug1(1, "Holding ofs DP %d.\n", jj);
 	alldp = hdp->dp;
 	ppindex = hdp->ppindex;
 	dpstate = hdp->dpstate;

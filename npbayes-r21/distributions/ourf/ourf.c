@@ -105,30 +105,41 @@ SS *mxReadSSVector(const mxArray *mvector)
 {
 	SS *result;
 	double *pr;
-	int ii;
+	int i, j, l = 0;
+	unsigned m, n;
 	pr = mxGetPr(mvector);
-	result = mxMalloc(sizeof(SS)*mxGetNumberOfElements(mvector));
-	for (ii = 0; ii < mxGetNumberOfElements(mvector); ii++)
-		result[ii] = pr[ii];
+	m = mxGetM(mvector);
+	n = mxGetN(mvector);
+	
+	result = mxMalloc(sizeof(SS)*n);
+	for (j = 0; j < n; j++)
+	{
+		result[j] = mxMalloc(sizeof(int)*m);
+		for (i = 0; i < m; i++)
+			result[j][i] = pr[l++];
+	}
 	return result;
 }
 
 mxArray *mxWriteSSVector(int numss, SS *ss)
 {
-	mxArray *result;
-	double *pr;
-	int ii;
-	result = mxCreateDoubleMatrix(1, numss, mxREAL);
-	pr = mxGetPr(result);
-	for (ii = 0; ii < numss; ii++)
-		pr[ii] = ss[ii];
-	mxFree(ss);
-	return result;
+	//mxArray *result;
+	//double *pr;
+	//int ii;
+	//result = mxCreateDoubleMatrix(1, numss, mxREAL);
+	//pr = mxGetPr(result);
+	//for (ii = 0; ii < numss; ii++)
+	//	pr[ii] = ss[ii];
+	//mxFree(ss);
+	//return result;
+	return 0;
 }
 
 void mxFreeSSVector(int numss, SS *ss)
 {
-	mxFree(ss);
+	int i;
+	for (i = 0; i < numss; i++)
+		mxFree(ss[i]);
 }
 
 HH mxReadHH(const mxArray *mvector)
