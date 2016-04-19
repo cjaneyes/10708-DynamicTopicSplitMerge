@@ -510,9 +510,13 @@ void hdp_randdatacc(HDP *hdp, int jj)
 
 		marglikelihoods(clik, hh, numclass + 1, classqq, ss);
 		for (cc = 0; cc <= numclass; cc++)
-			clik[cc] *= classnd[cc] + alpha*beta[cc];
+			//clik[cc] *= classnd[cc] + alpha*beta[cc];
+            clik[cc] += log_sum(log(classnd[cc]), log(alpha)+log(beta[cc]));
 		mxdebugarray(3, "  clik", "%1.3g", clik, numclass + 1);
 
+        log_normalize(clik, numclass + 1);
+        for (cc = 0; cc <= numclass; cc++)
+            clik[cc] = exp(clik[cc]);
 		datacc[ii] = cc = randmult(clik, numclass + 1, 1);
 
 		mxdebug1(3, "add data. newcc %d. ", cc);
