@@ -1,38 +1,12 @@
 rng('default');
-%% Compile
+%% Setup path & compile as needed
 
-bRecompile = 1; 
-bDebugMex = 1;
+addpath distributions/ourf;
+addpath utilities;
+addpath hdpmix;
 
-if bRecompile || exist('hdp_ourf_iterate') ~= 3 %#ok<EXIST> % 3 means MEX function
-    addpath distributions/ourf;
-    addpath utilities;
-    addpath hdpmix;
-    cd distributions/ourf;
-    try
-        if bDebugMex
-            mex -g hdp_ourf_iterate.c
-        else
-            mex hdp_ourf_iterate.c
-        end
-    catch ME
-        cd ../..;
-        rethrow(ME);
-    end
-    cd ../../utilities;
-    try
-        if bDebugMex
-            mex -g randgamma.c
-            mex -g randnumtable.c
-        else
-            mex randgamma.c
-            mex randnumtable.c
-        end
-    catch ME
-        cd ..
-        rethrow(ME);
-    end
-    cd ..
+if exist('hdp_ourf_iterate') ~= 3 %#ok<EXIST> % 3 means MEX function
+    Make
 end
 
 %% Read preprocessed data
@@ -46,7 +20,7 @@ for y = 1:nYear
     mn = load(['../data/' fname '.meta']);
     ijv = load(['../data/' fname '.sparse']);
     ourdata{y} = full(sparse(ijv(:, 2), ijv(:, 1), ijv(:, 3), mn(2), mn(1)));
-    ourdata{y} = ourdata{y}(1:3, 1:3);
+%     ourdata{y} = ourdata{y}(1:3, 1:3);
 end
 
 % concatenate just for now
@@ -54,6 +28,8 @@ ourdata = [ourdata{:}];
 trainss = cell(1);
 trainss{1} = ourdata;
 
+% Vocabulary size
+lenV = mn(2);
 
 %% Setup parameters
 
@@ -73,7 +49,7 @@ alphab = 1;
 % if sampling is not used, alpha = alphaa / alphab
 
 % H for G0
-hh = ones(3, 1); % mn(2)
+hh = ones(lenV, 1);
 
 % expected number of classes/mixtures/topics
 numclass = 2;
