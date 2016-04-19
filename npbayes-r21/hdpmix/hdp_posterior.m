@@ -7,6 +7,7 @@ totiter = numburnin + numsample*numspace;
 sample  = cell(1,numsample);
 lik     = zeros(1,numburnin+numsample*numspace);
 
+assert(all(hdp.base.classqq(:) >= 0));
 [hdp, ll] = hdp.func.iterate(hdp,numburnin,doconparam,dolik,dodebug);
 lik(1:numburnin) = ll;
 for samp = 1:numsample
