@@ -12,5 +12,5 @@ hdp = hdp_setdata(hdp, 2, trainss);
 hdp = dp_activate(hdp, [1 2], numclass);
 
 [sample, hdp, lik] = hdp_posterior(hdp,trainnumburnin,trainnumsample,...
-                   trainnumspace,trainconparam,1,0);
+                   trainnumspace,trainconparam, 0, 4);
 

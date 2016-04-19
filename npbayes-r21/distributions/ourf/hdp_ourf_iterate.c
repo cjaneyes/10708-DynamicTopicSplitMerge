@@ -25,7 +25,7 @@ void mexFunction( int nlhs, mxArray *plhs[],
 #ifndef NODEBUG
   DEBUG = nrhs==4 ? 0 : *mxGetPr(DODEBUG);
 #endif
-
+  srand(0);
   hdp = mxReadHDP(HDPIN);
 
   LIK = mxCreateDoubleMatrix(1, *mxGetPr(NUMITER),mxREAL);

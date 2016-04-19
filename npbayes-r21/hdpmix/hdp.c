@@ -518,6 +518,11 @@ void hdp_randdatacc(HDP *hdp, int jj)
         for (cc = 0; cc <= numclass; cc++)
             clik[cc] = exp(clik[cc]);
 		datacc[ii] = cc = randmult(clik, numclass + 1, 1);
+		//datacc[ii] = cc = randuniform(numclass + 1);
+		//cc = datacc[ii];
+		if (cc < 0 || cc > numclass)
+			cc = cc;
+
 
 		mxdebug1(3, "add data. newcc %d. ", cc);
 		adddata(hh, classqq[cc], ss);

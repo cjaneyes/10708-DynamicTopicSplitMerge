@@ -89,6 +89,8 @@ void deldata(HH hh, QQ qq, SS ss)
     {
         qq[w] -= ss[w];
     }
+	if (qq[0] < 0)
+		qq[0] = qq[0];
 }
 
 QQ newclass(HH hh)

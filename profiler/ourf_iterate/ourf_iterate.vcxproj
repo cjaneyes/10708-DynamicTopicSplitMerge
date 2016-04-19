@@ -41,10 +41,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>$(SolutionDir)..\npbayes-r21\distributions\ourf</OutDir>
+    <OutDir>$(SolutionDir)..\npbayes-r21\distributions\ourf\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>$(SolutionDir)..\npbayes-r21\distributions\ourf</OutDir>
+    <OutDir>$(SolutionDir)..\npbayes-r21\distributions\ourf\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
