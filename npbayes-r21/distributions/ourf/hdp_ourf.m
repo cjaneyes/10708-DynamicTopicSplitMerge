@@ -31,3 +31,9 @@ else
                        trainnumspace,trainconparam, 0, 4);
 
 end
+
+[sample, hdp, lik] = hdp_posterior(hdp,trainnumburnin,trainnumsample,...
+                   trainnumspace,trainconparam, 0, 2);
+
+% Record old statistics
+[old_M, old_beta] = hdp_record(sample);
