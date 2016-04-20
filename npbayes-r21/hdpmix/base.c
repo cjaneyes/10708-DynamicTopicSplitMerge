@@ -59,7 +59,13 @@ BASE *mxReadBase(mxArray *mstruct, unsigned char bEvo)
 		result->old_beta = mxReadDoubleVector(mxReadField(mstruct, "old_beta"), 0, 0.0, 0.0);
 		result->old_classnt = mxReadIntVector(mxReadField(mstruct, "old_classnt"), 0, 0, 0);
 		// intialize lambda
-		result->lambda = ? ;
+		result->lambda = mxMalloc(sizeof(double *) * maxclass);
+        for(ii = 0; ii < maxclass; ii++)
+        {
+            lambda[ii] = mxMalloc(sizeof(double) * old_numclass);
+            for(jj = 0;jj < old_numclass;jj+=)
+                result->lambda[ii][jj] = 0.0;
+        }
 	}
 
 	return result;
