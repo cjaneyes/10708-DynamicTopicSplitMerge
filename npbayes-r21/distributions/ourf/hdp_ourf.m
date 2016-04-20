@@ -16,9 +16,16 @@ if bEvo
     [sample, hdp, lik] = hdp_posterior(hdp,trainnumburnin,trainnumsample,...
                        trainnumspace,trainconparam, 0, 4);
     % get data from t-1
+    
     %  hdp.base.??? = ?;
+    % Record old statistics
+    [hdp.base.old_classnt, hdp.base.old_beta, hdp.base.old_numclass] = hdp_record(sample);
+    
     for t = 2:T
          trainss{t};
+         
+         % Record old statistics
+        [hdp.base.old_classnt, hdp.base.old_beta, hdp.base.old_numclass] = hdp_record(sample);
     end
 else
     hdp = hdp_init(func, [0 1], [1 1], hh, alphaa, alphab); 
@@ -31,3 +38,4 @@ else
                        trainnumspace,trainconparam, 0, 4);
 
 end
+
