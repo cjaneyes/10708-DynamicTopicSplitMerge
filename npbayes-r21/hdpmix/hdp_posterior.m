@@ -8,6 +8,9 @@ sample  = cell(1,numsample);
 lik     = zeros(1,numburnin+numsample*numspace);
 
 assert(all(hdp.base.classqq(:) >= 0));
+if bEvo
+    hdp.base.lambda = [];
+end
 [hdp, ll] = hdp.func.iterate(hdp,numburnin,doconparam,dolik,dodebug, bEvo);
 sample{1} = hdp_getstate(hdp);
 % lik(1:numburnin) = ll;
