@@ -360,6 +360,47 @@ void hdp_randconparam(HDP *hdp, int numiter)
 }
 
 /***************************************************************************/
+void hdp_randbeta_bEvo(HDP *hdp, int jj)
+{
+    BASE *base;
+	DP *alldp, *dp;
+	int *classnd, numclass, old_numclass;
+	double alpha, *beta, *old_beta;
+    LL *lambda;
+    
+
+	int cc, pp, kk;
+	double *clik;
+
+	base = hdp->base;
+    lambda = base->lambda;
+    old_beta = base->oldbeta;
+	numclass = base->numclass;
+    old_numclass = base->old_numclass;
+	alldp = hdp->dp;
+	dp = alldp + jj;
+	clik = hdp->clik;
+
+	mxdebug0(2, "sample beta. ");
+	classnd = dp->classnd;
+	alpha = dp->alpha;
+	pp = hdp->ppindex[jj];
+	beta = (pp == -1) ? base->beta : alldp[pp].beta;
+    
+    for (cc = 0; cc <= numclass; cc++)
+    {
+        double beta_k = 0;
+        for(kk = 0; kk < old_numclass;kk++)
+        {
+            beta_k += lambda[cc][kk] * oldbeta[kk];
+        }
+		clik[cc] = classnd[cc] + alpha*beta_k;
+    }
+	randdir(dp->beta, clik, numclass + 1, 1);
+	mxdebugarray(3, "\n  beta", "%1.3g", dp->beta, numclass + 1);
+}
+
+
 void hdp_randbeta(HDP *hdp, int jj)
 {
 	BASE *base;
