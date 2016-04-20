@@ -103,7 +103,9 @@ double randgamma(double rr)
 	else if (rr == 1.0)
 	{
 		/* Exponential */
-		return -log(drand48());
+		double r = drand48();
+		while (r == 0) r = drand48();
+		return -log(r);
 	}
 	else if (rr < 1.0)
 	{
