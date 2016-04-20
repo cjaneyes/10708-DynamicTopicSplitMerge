@@ -1,16 +1,33 @@
-function [hdp, sample, lik] = hdp_ourf(hh, alphaa, alphab,...
+function [hdp, sample, lik] = hdp_ourf(bEvo, hh, alphaa, alphab,...
     numclass,trainss,...
     trainnumburnin,trainnumsample,trainnumspace,...
     trainconparam)
 
 func = ourf_bundle_func;
 
-hdp = hdp_init(func, [0 1], [1 1], hh, alphaa, alphab); 
-hdp = hdp_setdata(hdp, 2, trainss);
+if bEvo
+    T = length(trainss);
+    hdp = hdp_init(func, [0 1], [1 1], hh, alphaa, alphab); 
+    hdp = hdp_setdata(hdp, 2, trainss{1});
 
-% random initialization
-hdp = dp_activate(hdp, [1 2], numclass);
+    % random initialization
+    hdp = dp_activate(hdp, [1 2], numclass);
 
-[sample, hdp, lik] = hdp_posterior(hdp,trainnumburnin,trainnumsample,...
-                   trainnumspace,trainconparam, 0, 4);
+    [sample, hdp, lik] = hdp_posterior(hdp,trainnumburnin,trainnumsample,...
+                       trainnumspace,trainconparam, 0, 4);
+    % get data from t-1
+    %  hdp.base.??? = ?;
+    for t = 2:T
+         trainss{t};
+    end
+else
+    hdp = hdp_init(func, [0 1], [1 1], hh, alphaa, alphab); 
+    hdp = hdp_setdata(hdp, 2, trainss);
 
+    % random initialization
+    hdp = dp_activate(hdp, [1 2], numclass);
+
+    [sample, hdp, lik] = hdp_posterior(hdp,trainnumburnin,trainnumsample,...
+                       trainnumspace,trainconparam, 0, 4);
+
+end

@@ -1,4 +1,9 @@
+% if it is time series
+bEvo = 0;
+
+% fix rand seed
 rng('default');
+
 %% Setup path & compile as needed
 
 addpath distributions/ourf;
@@ -20,16 +25,18 @@ for y = 1:nYear
     mn = load(['../data/' fname '.meta']);
     ijv = load(['../data/' fname '.sparse']);
     ourdata{y} = full(sparse(ijv(:, 2), ijv(:, 1), ijv(:, 3), mn(2), mn(1)));
-%     ourdata{y} = ourdata{y}(1:3, 1:3);
+    ourdata{y} = ourdata{y}(1:3, 1:3);
 end
 
-% concatenate just for now
-ourdata = [ourdata{:}];
-trainss = cell(1);
-trainss{1} = ourdata;
+if bEvo
+    trainss = ourdata;
+else
+    ourdata = [ourdata{:}];
+    trainss = cell(1);
+end
 
 % Vocabulary size
-lenV = mn(2);
+lenV = 3; % mn(2);
 
 %% Setup parameters
 
@@ -56,7 +63,7 @@ numclass = 2;
 
 %% Sampling
 
-[hdp, sample, lik] = hdp_ourf(hh, alphaa, alphab, numclass, ...
+[hdp, sample, lik] = hdp_ourf(bEvo, hh, alphaa, alphab, numclass, ...
     trainss, numburnin, numsample, numinterval, doconparam);
 
 
