@@ -1,5 +1,6 @@
 #ifndef _BASE
 #define _BASE
+
 /*
  * Structure representing the base distribution, in particular, the
  * parameters for the base distribution, and samples from the base
@@ -55,27 +56,45 @@ BASE *mxReadBase(mxArray *mstruct, unsigned char bEvo)
 
 	if (bEvo)
 	{
-		result->old_numclass = mxReadScalar(mxReadField(mstruct, "old_numclass"));
+		int old_numclass;
+		old_numclass = result->old_numclass = mxReadScalar(mxReadField(mstruct, "old_numclass"));
 		result->old_beta = mxReadDoubleVector(mxReadField(mstruct, "old_beta"), 0, 0.0, 0.0);
 		result->old_classnt = mxReadIntVector(mxReadField(mstruct, "old_classnt"), 0, 0, 0);
 		// intialize lambda
 		result->lambda = mxMalloc(sizeof(double *) * maxclass);
         for(ii = 0; ii < maxclass; ii++)
         {
-            lambda[ii] = mxMalloc(sizeof(double) * old_numclass);
-            for(jj = 0;jj < old_numclass;jj+=)
-                result->lambda[ii][jj] = 0.0;
+			result->lambda[ii] = mxMalloc(sizeof(double) * old_numclass);
+			memset(result->lambda[ii], 0, sizeof(double) * old_numclass);
         }
 	}
 
 	return result;
 }
 
-void mxWriteBase(mxArray *result, BASE *base)
+void mxWriteBase(mxArray *result, BASE *base, unsigned char bEvo)
 {
 	mxWriteField(result, "numclass", mxWriteScalar(base->numclass));
 	mxWriteField(result, "classqq", mxWriteQQVector(base->hh,
 		base->numclass + 1, base->maxclass, base->classqq));
+	if (bEvo)
+	{
+		int ii, jj, l = 0;
+		double *pr;
+		mxArray *mx_lambda = mxCreateDoubleMatrix(base->old_numclass, base->numclass + 1, mxREAL);
+		pr = mxGetPr(mx_lambda);
+		for (jj = 0; jj < base->maxclass; jj++)
+		{
+			if (jj <= base->numclass)
+				for (ii = 0; ii < base->old_numclass; ii++)
+					pr[l++] = base->lambda[jj][ii];
+			mxFree(base->lambda[jj]);
+		}
+		mxFree(base->lambda);
+		mxFree(base->old_beta);
+		mxFree(base->old_classnt);
+		mxWriteField(result, "lambda", mx_lambda);
+	}
 	mxFreeHH(base->hh);
 	mxFree(base->beta);
 	mxFree(base);

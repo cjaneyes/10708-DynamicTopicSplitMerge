@@ -20,4 +20,8 @@ for cp = 1:hdp.numconparam
   hdpstate.alpha(cp)   = hdp.conparam{cp}.alpha;
 end
 
+if isfield(hdp.base, 'lambda')
+    hdpstate.lambda = hdp.base.lambda;
+end
+
 

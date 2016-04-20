@@ -1,3 +1,4 @@
+#include <string.h>
 #include "ourf.c"
 #include "../../hdpmix/hdp.c"
 
@@ -25,7 +26,7 @@ void mexFunction( int nlhs, mxArray *plhs[],
 
   if (nrhs < 6)
 	  bEvo = 0;
-  else bEvo = *mxGetPr(prhs[5]);
+  else bEvo = mxGetScalar(prhs[5]);
 
 #ifndef NODEBUG
   DEBUG = nrhs==4 ? 0 : *mxGetPr(DODEBUG);
@@ -41,7 +42,7 @@ void mexFunction( int nlhs, mxArray *plhs[],
   mxdebug0(1,"Done hdpMultinomial_iterate.\n");
 
   HDPOUT = mxDuplicateArray(HDPIN);
-  mxWriteHDP(HDPOUT,hdp);
+  mxWriteHDP(HDPOUT,hdp, bEvo);
 }
 
 

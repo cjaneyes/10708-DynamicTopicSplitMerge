@@ -1,5 +1,5 @@
 % if it is time series
-bEvo = 0;
+bEvo = 1;
 
 % fix rand seed
 rng('default');
@@ -33,6 +33,7 @@ if bEvo
 else
     ourdata = [ourdata{:}];
     trainss = cell(1);
+    trainss{1} = ourdata;
 end
 
 % Vocabulary size
@@ -42,7 +43,7 @@ lenV = 3; % mn(2);
 
 % iterations and sample extraction
 numburnin   = 10000;
-numsample   = 2;
+numsample   = 1;
 numinterval = 5;
 
 % whether to sample concentration parameters:
@@ -61,9 +62,11 @@ hh = ones(lenV, 1);
 % expected number of classes/mixtures/topics
 numclass = 2;
 
+verbosity = 0;
+
 %% Sampling
 
 [hdp, sample, lik] = hdp_ourf(bEvo, hh, alphaa, alphab, numclass, ...
-    trainss, numburnin, numsample, numinterval, doconparam);
+    trainss, numburnin, numsample, numinterval, doconparam, verbosity);
 
 

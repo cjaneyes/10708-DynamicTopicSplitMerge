@@ -110,13 +110,13 @@ HDP *mxReadHDP(const mxArray *mcell, unsigned char bEvo)
 	return result;
 }
 
-void mxWriteHDP(mxArray *result, HDP *hdp)
+void mxWriteHDP(mxArray *result, HDP *hdp, unsigned char bEvo)
 {
 	mxdebug0(1, "Writing HDP.\n");
 	mxWriteDPVector(mxReadField(result, "dp"), hdp->numdp, hdp->dp,
 		hdp->dpstate, hdp->base->numclass + 1);
 	mxWriteConparamVector(mxReadField(result, "conparam"), hdp->conparam);
-	mxWriteBase(mxReadField(result, "base"), hdp->base);
+	mxWriteBase(mxReadField(result, "base"), hdp->base, bEvo);
 	mxWriteField(result, "dpstate", mxWriteIntVector(1, hdp->numdp, hdp->dpstate, 0));
 	mxFree(hdp->ppindex);
 	mxFree(hdp->cpindex);
@@ -133,7 +133,7 @@ void mxWriteHDP(mxArray *result, HDP *hdp)
   pe = pointer + size; \
     while ( pp < pe ) { *pp = zero; pp++; } \
 }
-int hdp_addclass(HDP *hdp)
+int hdp_addclass(HDP *hdp, unsigned char bEvo)
 {
 	BASE *base;
 	DP *alldp, *dp;
@@ -199,6 +199,8 @@ int hdp_addclass(HDP *hdp)
 		hdp_extendclass(base->classqq, numclass + 1, maxclass, QQ, newclass(hh));
 		hdp_extendclass(hdp->clik, numclass + 1, maxclass, double, 0.0);
 		hdp_extendclass(base->beta, numclass + 1, maxclass, double, 0.0);
+		if (bEvo)
+			hdp_extendclass(base->lambda, base->old_numclass, maxclass, double, 0.0);
 		for (jj = 0; jj < numdp; jj++)
 		{
 			dp = alldp + jj;
@@ -392,7 +394,7 @@ void hdp_randbeta_bEvo(HDP *hdp, int jj)
         double beta_k = 0;
         for(kk = 0; kk < old_numclass;kk++)
         {
-            beta_k += lambda[cc][kk] * oldbeta[kk];
+            beta_k += lambda[cc][kk] * old_beta[kk];
         }
 		clik[cc] = classnd[cc] + alpha*beta_k;
     }
@@ -500,7 +502,7 @@ void hdp_collecttotal(HDP *hdp, int jj)
 	conparam[cp].totalnt[tt] = nt;
 }
 
-void hdp_randdatacc(HDP *hdp, int jj)
+void hdp_randdatacc(HDP *hdp, int jj, unsigned char bEvo)
 {
 	/* variables to be read in from hdp struct */
 	BASE *base;
@@ -573,7 +575,7 @@ void hdp_randdatacc(HDP *hdp, int jj)
 		/* increase number of classes if necessary */
 		if (cc == numclass)
 		{
-			numclass = hdp_addclass(hdp);
+			numclass = hdp_addclass(hdp, bEvo);
 			classqq = base->classqq;
 			classnd = dp->classnd;
 			classnt = dp->classnt;
@@ -605,7 +607,7 @@ void hdp_iterate(HDP *hdp, double *iterlik,
 			mxdebug2(2, "\n DP %d state %d: ", jj, dpstate[jj]);
 			if (dpstate[jj] == ACTIVE)
 			{
-				hdp_randdatacc(hdp, jj);
+				hdp_randdatacc(hdp, jj, bEvo);
 				hdp_randclassnt(hdp, jj);
 				hdp_collecttotal(hdp, jj);
 			}
@@ -775,8 +777,8 @@ void hdp_predict(HDP *hdp, double *lik, int numburnin, int numsample,
 	for (jj = 0; jj < numpredict; jj++)
 	{
 		hdp_dpactivate(hdp, predictjj[jj]);
-		hdp_iterate(hdp, NULL, numburnin, doconparam, 0);
-		hdp_iterate(hdp, lik, numsample, doconparam, 1);
+		hdp_iterate(hdp, NULL, numburnin, doconparam, 0, 0);
+		hdp_iterate(hdp, lik, numsample, doconparam, 1, 0);
 		lik += numsample;
 		hdp_dpholdout(hdp, predictjj[jj]);
 	}

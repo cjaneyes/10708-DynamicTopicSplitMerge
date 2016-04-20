@@ -12,7 +12,7 @@ typedef struct
 } HH;
 
 typedef int* SS;
-
+typedef double* LL;
 typedef int* QQ;
 
 int numitems(QQ qq)
