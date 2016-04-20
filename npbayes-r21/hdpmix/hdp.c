@@ -87,14 +87,14 @@ typedef struct
 
 
 /***************************************************************************/
-HDP *mxReadHDP(const mxArray *mcell)
+HDP *mxReadHDP(const mxArray *mcell, unsigned char bEvo)
 {
 	HDP *result;
 	result = mxMalloc(sizeof(HDP));
 	mxdebug0(1, "Reading HDP.\n");
 	result->numdp = mxReadScalar(mxReadField(mcell, "numdp"));
 	result->numconparam = mxReadScalar(mxReadField(mcell, "numconparam"));
-	result->base = mxReadBase(mxReadField(mcell, "base"));
+	result->base = mxReadBase(mxReadField(mcell, "base"), bEvo);
 	result->dpstate = mxReadIntVector(mxReadField(mcell, "dpstate"),
 		result->numdp, 0, 0);
 	result->ppindex = mxReadIntVector(mxReadField(mcell, "ppindex"),
@@ -374,7 +374,7 @@ void hdp_randbeta_bEvo(HDP *hdp, int jj)
 
 	base = hdp->base;
     lambda = base->lambda;
-    old_beta = base->oldbeta;
+    old_beta = base->old_beta;
 	numclass = base->numclass;
     old_numclass = base->old_numclass;
 	alldp = hdp->dp;
@@ -585,7 +585,7 @@ void hdp_randdatacc(HDP *hdp, int jj)
 
 /***************************************************************************/
 void hdp_iterate(HDP *hdp, double *iterlik,
-	int numiter, int doconparam, int dolik)
+	int numiter, int doconparam, int dolik, unsigned char bEvo)
 {
 	BASE *base;
 	QQ *classqq;
@@ -614,13 +614,10 @@ void hdp_iterate(HDP *hdp, double *iterlik,
 
 		for (jj = 0; jj < numdp; jj++)
 		{
-			if (dpstate[jj] == ACTIVE) hdp_randbeta(hdp, jj);
-			/*
-			if (hdp->ppindex[jj] == -1)
-			// G0
-				hdp_randbeta(hdp, jj);
-			else hdp_randbetat(hdp, jj);
-			*/
+			if (dpstate[jj] == ACTIVE)
+				if (bEvo && hdp->ppindex[jj] != -1)
+					hdp_randbeta_bEvo(hdp, jj);
+				else hdp_randbeta(hdp, jj);
 		}
 
 		/* delete empty classes, only after randclassnt, randbeta for consistency */

@@ -1,8 +1,8 @@
 #ifndef _BASE
 #define _BASE
 /*
- * Structure representing the base distribution, in particular, the 
- * parameters for the base distribution, and samples from the base 
+ * Structure representing the base distribution, in particular, the
+ * parameters for the base distribution, and samples from the base
  * distribution (one sample per class).
  *
  * numclass     The number of samples from the base distribution (number of
@@ -13,7 +13,7 @@
  * classqq      The sufficient statistics for data items associated with
  *              each cluster.  In matlab, classqq(:,kk) refers to the
  *              statistics for class kk.  There is numclass+1 represented
- *              clusters (one additional cluster with no data associated 
+ *              clusters (one additional cluster with no data associated
  *              with it).
  * beta         Only used internally.  A vector of numclass 0's following by
  *              one 1.  In matlab this is a row vector.
@@ -27,36 +27,52 @@
 
 #include "../utilities/mxutils.c"
 
-typedef struct {
-  int numclass, maxclass;
-  HH hh;
-  QQ *classqq;
-  double *beta;
+typedef struct
+{
+	int numclass, maxclass, old_numclass;
+	HH hh;
+	QQ *classqq;
+	double *beta;
+	double *old_beta;
+	int *old_classnt;
+	LL *lambda;
 } BASE;
 
-BASE *mxReadBase(mxArray *mstruct) {
-  BASE *result;
-  int ii, maxclass;
-  result = mxMalloc(sizeof(BASE));
-  result->numclass = mxReadScalar(mxReadField(mstruct,"numclass"));
-  result->maxclass = maxclass = (result->numclass+2) * 2;
-  result->hh       = mxReadHH(mxReadField(mstruct,"hh"));
-  result->classqq  = mxReadQQVector(result->hh,mxReadField(mstruct,"classqq"),
-                        result->maxclass);
-  result->beta = mxMalloc(sizeof(double)*maxclass);
-  for ( ii = 0 ; ii < maxclass ; ii++) 
-    result->beta[ii] = 0.0;
-  result->beta[result->numclass] = 1.0;
-  return result;
+BASE *mxReadBase(mxArray *mstruct, unsigned char bEvo)
+{
+	BASE *result;
+	int ii, maxclass;
+	result = mxMalloc(sizeof(BASE));
+	result->numclass = mxReadScalar(mxReadField(mstruct, "numclass"));
+	result->maxclass = maxclass = (result->numclass + 2) * 2;
+	result->hh = mxReadHH(mxReadField(mstruct, "hh"));
+	result->classqq = mxReadQQVector(result->hh, mxReadField(mstruct, "classqq"),
+		result->maxclass);
+	result->beta = mxMalloc(sizeof(double)*maxclass);
+	for (ii = 0; ii < maxclass; ii++)
+		result->beta[ii] = 0.0;
+	result->beta[result->numclass] = 1.0;
+
+	if (bEvo)
+	{
+		result->old_numclass = mxReadScalar(mxReadField(mstruct, "old_numclass"));
+		result->old_beta = mxReadDoubleVector(mxReadField(mstruct, "old_beta"), 0, 0.0, 0.0);
+		result->old_classnt = mxReadIntVector(mxReadField(mstruct, "old_classnt"), 0, 0, 0);
+		// intialize lambda
+		result->lambda = ? ;
+	}
+
+	return result;
 }
 
-void mxWriteBase(mxArray *result,BASE *base) {
-  mxWriteField(result,"numclass",mxWriteScalar(base->numclass));
-  mxWriteField(result,"classqq",mxWriteQQVector(base->hh,
-        base->numclass+1,base->maxclass,base->classqq));
-  mxFreeHH(base->hh);
-  mxFree(base->beta);
-  mxFree(base);
+void mxWriteBase(mxArray *result, BASE *base)
+{
+	mxWriteField(result, "numclass", mxWriteScalar(base->numclass));
+	mxWriteField(result, "classqq", mxWriteQQVector(base->hh,
+		base->numclass + 1, base->maxclass, base->classqq));
+	mxFreeHH(base->hh);
+	mxFree(base->beta);
+	mxFree(base);
 }
 
 #endif
