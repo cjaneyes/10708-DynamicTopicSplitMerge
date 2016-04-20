@@ -8,10 +8,13 @@ what's my output:
 import os, sys
 import string
 from collections import defaultdict
+import re
+from sets import Set
+from stemming.porter2 import stem
 
 #  field = ["#*", "#@", "#year", "#conf", "#citation", "#index", "#arnetid", "#%", "#!", "holder"]
 field = ["#year", "#index", "#conf", "#!", "holder"]
-year = ["year1995", "year1996", "year1997", "year1998", "year1999"]
+year = ["year1995", "year1996"]
 
 def preprocess(lines, cnt):
     item = {}
@@ -41,61 +44,70 @@ def process(line):
     content = s
     return content
 
+# read in the stop-word list
+def readStopword(stopwordFileName):
+    stopwordList = Set()
+    for word in open(stopwordFileName, 'r').readlines():
+        stopwordList.add(word.strip().lower())
+    return stopwordList
+
 if __name__ == "__main__":
-    lines = open("/Users/Jing/Documents/16Spring/10708/Project/pgm/data/acm_output.txt", 'r').readlines()
-    year_group = defaultdict(list)
+    # lines = open("/Users/Jing/Documents/16Spring/10708/Project/pgm/data/acm_output.txt", 'r').readlines()
+    # year_group = defaultdict(list)
 
-    paperString = ""
-    cnt = 0
-    for i in range(1, len(lines)):
-        if lines[i] == "\n":
-            item = preprocess(paperString, cnt)
-            cnt += 1
+    # paperString = ""
+    # cnt = 0
+    # for i in range(1, len(lines)):
+    #     if lines[i] == "\n":
+    #         item = preprocess(paperString, cnt)
+    #         cnt += 1
 
-            if cnt > 1470000:
-            # if cnt > 1000:
-                break
+    #         if cnt > 1470000:
+    #         # if cnt > 1000:
+    #             break
 
-            if item == None:
-                continue
-            print "item ", item["#index"]
+    #         if item == None:
+    #             continue
+    #         print "item ", item["#index"]
 
-            for f, c in item.items():
-                if f == "#year":
-                    year_group[c].append(item)
-                    break
-            paperString = ""
+    #         for f, c in item.items():
+    #             if f == "#year":
+    #                 year_group[c].append(item)
+    #                 break
+    #         paperString = ""
 
-        paperString += lines[i]
+    #     paperString += lines[i]
 
-    for y, itemList in year_group.items():
-        print y
-        output = open("/Users/Jing/Documents/16Spring/10708/Project/pgm/data/RawYear/year"+str(y), 'w')
-        for item in itemList:
-            for f, c in item.items():
-                # if y == "year2008":
-                #     print f, c
-                if f == "#!":
-                    content = process(c)
-                    output.write(content+" ")
-                if f == "#conf":
-                    if len(c.split()) > 1:
-                        content = ''.join([i[0] for i in c.upper().split()])
-                    else:
-                        content = c.upper()
-                    output.write(content+" ")
-                # output.write("\n")
-            output.write("\n")
-        output.close()
+    # for y, itemList in year_group.items():
+    #     print y
+    #     output = open("/Users/Jing/Documents/16Spring/10708/Project/pgm/data/RawYear/year"+str(y), 'w')
+    #     for item in itemList:
+    #         for f, c in item.items():
+    #             # if y == "year2008":
+    #             #     print f, c
+    #             if f == "#!":
+    #                 content = process(c)
+    #                 output.write(content+" ")
+    #             if f == "#conf":
+    #                 if len(c.split()) > 1:
+    #                     content = ''.join([i[0] for i in c.upper().split()])
+    #                 else:
+    #                     content = c.upper()
+    #                 output.write(content+" ")
+    #             # output.write("\n")
+    #         output.write("\n")
+    #     output.close()
 
 
     filePath = "/Users/Jing/Documents/16Spring/10708/Project/pgm/data/RawYear/"
     outputPath = "/Users/Jing/Documents/16Spring/10708/Project/pgm/data/Year/"
     dirs = os.listdir(filePath)
-
+    stopwordList = readStopword("/Users/Jing/Documents/16Spring/10708/Project/pgm/data/stopword.list")
+    isNumeric = re.compile(r'.*[0-9].*')
     year_doc_list = defaultdict(list)
     vocab = defaultdict(int)
     vocab_inex = 1
+    vocab_remap = defaultdict(str)
 
     for fn in dirs:
         if not fn in year:
@@ -104,17 +116,30 @@ if __name__ == "__main__":
         outFile = outputPath+fn
         f = open(inFile, 'r')
         docList = []
+        count = 0
         for line in f:
             if line == "\n":
                 continue
-            content = line.strip().split()
-            for w in content:
+            count += 1
+            if count > 2000:
+                break
+            content = []
+            content_ori = line.strip().split()
+            for w in content_ori:
+                if (w in stopwordList) or (isNumeric.match(w)):
+                    continue
+                w = stem(w)
+                content.append(w)
                 if not vocab.has_key(w):
                     vocab[w] = vocab_inex
+                    vocab_remap[vocab_inex] = w
                     vocab_inex += 1
             docList.append(content)
         f.close()
         year_doc_list[fn] = docList
+
+    for k, v in vocab_remap.items():
+        print k, v
 
     for year, docList in year_doc_list.items():
         f_info = open(outputPath+year+".meta", 'w')
@@ -130,7 +155,7 @@ if __name__ == "__main__":
                 doc_info[vocab[w]] += 1
             f.write(str(len(doc_info))+" ")
             for k, v in doc_info.items():
-                f.write(str(k)+":"+str(v)+" ")
+                f.write(str(vocab_remap[k])+":"+str(v)+" ")
                 f_sparse.write(str(doc_index)+" "+str(k)+" "+str(v)+"\n")
             f.write("\n")
         f.close()
