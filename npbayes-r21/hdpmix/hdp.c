@@ -402,6 +402,11 @@ void hdp_randbeta_bEvo(HDP *hdp, int jj)
 	mxdebugarray(3, "\n  beta", "%1.3g", dp->beta, numclass + 1);
 }
 
+void hdp_randalphak(HDP *hdp)
+{
+
+}
+
 void hdp_randlambda(HDP *hdp)
 {
 
@@ -617,6 +622,7 @@ void hdp_iterate(HDP *hdp, double *iterlik,
 			}
 		}
 		mxdebug0(2, "\n");
+		hdp_randalphak(hdp);
 		hdp_randlambda(hdp);
 		for (jj = 0; jj < numdp; jj++)
 		{
