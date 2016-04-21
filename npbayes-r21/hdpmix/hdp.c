@@ -402,6 +402,10 @@ void hdp_randbeta_bEvo(HDP *hdp, int jj)
 	mxdebugarray(3, "\n  beta", "%1.3g", dp->beta, numclass + 1);
 }
 
+void hdp_randlambda(HDP *hdp)
+{
+
+}
 
 void hdp_randbeta(HDP *hdp, int jj)
 {
@@ -613,7 +617,7 @@ void hdp_iterate(HDP *hdp, double *iterlik,
 			}
 		}
 		mxdebug0(2, "\n");
-
+		hdp_randlambda(hdp);
 		for (jj = 0; jj < numdp; jj++)
 		{
 			if (dpstate[jj] == ACTIVE)
