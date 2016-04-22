@@ -26,7 +26,7 @@
  *              in result if necessary.  Frees memory allocated.
  */
 
-#include "../utilities/mxutils.c"
+#include "../utilities/mxutils.cpp"
 
 typedef struct
 {
@@ -43,13 +43,13 @@ BASE *mxReadBase(mxArray *mstruct, unsigned char bEvo)
 {
 	BASE *result;
 	int ii, maxclass;
-	result = mxMalloc(sizeof(BASE));
+	result = (BASE*)mxMalloc(sizeof(BASE));
 	result->numclass = mxReadScalar(mxReadField(mstruct, "numclass"));
 	result->maxclass = maxclass = (result->numclass + 2) * 2;
 	result->hh = mxReadHH(mxReadField(mstruct, "hh"));
 	result->classqq = mxReadQQVector(result->hh, mxReadField(mstruct, "classqq"),
 		result->maxclass);
-	result->beta = mxMalloc(sizeof(double)*maxclass);
+	result->beta = (double*)mxMalloc(sizeof(double)*maxclass);
 	for (ii = 0; ii < maxclass; ii++)
 		result->beta[ii] = 0.0;
 	result->beta[result->numclass] = 1.0;
@@ -61,10 +61,10 @@ BASE *mxReadBase(mxArray *mstruct, unsigned char bEvo)
 		result->old_beta = mxReadDoubleVector(mxReadField(mstruct, "old_beta"), 0, 0.0, 0.0);
 		result->old_classnt = mxReadIntVector(mxReadField(mstruct, "old_classnt"), 0, 0, 0);
 		// intialize lambda
-		result->lambda = mxMalloc(sizeof(double *) * maxclass);
+		result->lambda = (double**)mxMalloc(sizeof(double *) * maxclass);
         for(ii = 0; ii < maxclass; ii++)
         {
-			result->lambda[ii] = mxMalloc(sizeof(double) * old_numclass);
+			result->lambda[ii] = (double*)mxMalloc(sizeof(double) * old_numclass);
 			int jj;
             for(jj = 0;jj < old_numclass;jj++)
                 result->lambda[jj] = 1.0 / old_numclass;

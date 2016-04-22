@@ -35,7 +35,7 @@
  *              result if necessary.  Frees memory allocated.
  */
 
-#include "../utilities/mxutils.c"
+#include "../utilities/mxutils.cpp"
 
 #define ACTIVE 2
 #define FROZEN 1
@@ -53,7 +53,7 @@ DP *mxReadDPVector(mxArray *mcell, int *dpstate, int mm) {
   DP *result, *dp;
   int ii, nn, pp;
   nn = mxGetNumberOfElements(mcell);
-  result = mxMalloc(sizeof(DP)*nn);
+  result = (DP*)mxMalloc(sizeof(DP)*nn);
   for ( ii = 0 ; ii < nn ; ii++ ) {
     mstruct       = mxGetCell(mcell,ii);
     dp            = result+ii;

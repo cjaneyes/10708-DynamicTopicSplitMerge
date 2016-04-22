@@ -1,6 +1,6 @@
 #include <string.h>
-#include "ourf.c"
-#include "../../hdpmix/hdp.c"
+#include "ourf.cpp"
+#include "../../hdpmix/hdp.cpp"
 
 #define HDPIN prhs[0]
 #define NUMITER prhs[1]

@@ -74,7 +74,7 @@ mxArray *mxWriteScalar(double var) {
     type *result;  \
     int ii; \
     number = max(number,mxGetNumberOfElements(mvector)); \
-    result = mxMalloc(sizeof(type)*number); \
+    result = (type*)mxMalloc(sizeof(type)*number); \
     mdouble = mxGetPr(mvector); \
     for ( ii = 0 ; ii < mxGetNumberOfElements(mvector) ; ii++ ) \
       result[ii] = mdouble[ii] + shift; \
@@ -119,11 +119,11 @@ mxWriteVectorDef(mxWriteDoubleVector, double, "%g ");
     double *mdouble; \
     int ii, jj; \
     type **result; \
-    result = mxMalloc(sizeof(type*)*mxGetNumberOfElements(mcell));  \
+    result = (type**)mxMalloc(sizeof(type*)*mxGetNumberOfElements(mcell));  \
     for ( jj = 0 ; jj < mxGetNumberOfElements(mcell) ; jj++ ) {  \
       mvector = mxGetCell(mcell,jj);  \
       mdouble = mxGetPr(mvector);  \
-      result[jj] = mxMalloc(sizeof(type)*mxGetNumberOfElements(mvector));  \
+      result[jj] = (type*)mxMalloc(sizeof(type)*mxGetNumberOfElements(mvector));  \
       for ( ii = 0 ; ii < mxGetNumberOfElements(mvector) ; ii++ )  \
         result[jj][ii] = mdouble[ii] + shift;  \
     } \
@@ -160,9 +160,9 @@ mxWriteCellVectorDef(mxWriteDoubleCellVector, double);
     mdouble = mxGetPr(marray); \
     mm = max(mm, m1 = mxGetM(marray)); \
     nn = max(nn, n1 = mxGetN(marray)); \
-    result = mxMalloc(sizeof(type*)*mm); \
+    result = (type**)mxMalloc(sizeof(type*)*mm); \
     for ( jj = 0 ; jj < mm ; jj++ ) { \
-      result[jj] = mxMalloc(sizeof(type)*nn); \
+      result[jj] = (type*)mxMalloc(sizeof(type)*nn); \
     } \
     for ( jj = 0 ; jj < m1 ; jj++ ) {\
       for ( ii = 0 ; ii < n1 ; ii++ ) \
@@ -179,7 +179,7 @@ mxReadMatrixDef(mxReadIntMatrix,int);
 mxReadMatrixDef(mxReadDoubleMatrix,double);
 
 #define mxWriteMatrixDef(funcname, type) \
-  mxArray *funcname(int mm,int nn,int maxm,type **var,type shift) { \
+void funcname(int mm,int nn,int maxm,type **var,type shift) { \
     mxArray *result; \
     double *mdouble; \
     int ii, jj; \

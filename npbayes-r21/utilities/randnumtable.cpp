@@ -1,4 +1,4 @@
-#include "randutils.c"
+#include "randutils.cpp"
 
 #define mxIN1 prhs[0]
 #define mxIN2 prhs[1]

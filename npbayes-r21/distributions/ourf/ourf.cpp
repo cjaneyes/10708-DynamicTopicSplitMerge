@@ -3,7 +3,7 @@
 #include "mex.h"
 #include <math.h>
 #include <stdlib.h>
-#include "../../utilities/mxutils.c"
+#include "../../utilities/mxutils.cpp"
 
 typedef struct
 {
@@ -97,7 +97,7 @@ QQ newclass(HH hh)
 {
 	int ii;
 	QQ result;
-	result = mxMalloc(sizeof(int)*(hh.numdim + 1));
+	result = (int*)mxMalloc(sizeof(int)*(hh.numdim + 1));
 	memset(result, 0, sizeof(int)*(hh.numdim + 1));
 	return result;
 }
@@ -112,11 +112,11 @@ SS *mxReadSSVector(const mxArray *mvector)
 	m = mxGetM(mvector);
 	n = mxGetN(mvector);
 	
-	result = mxMalloc(sizeof(SS)*n);
+	result = (SS*)mxMalloc(sizeof(SS)*n);
 	for (j = 0; j < n; j++)
 	{
 		int sum = 0;
-		result[j] = mxMalloc(sizeof(int)*(m + 1));
+		result[j] = (int*)mxMalloc(sizeof(int)*(m + 1));
 		for (i = 1; i <= m; i++)
 			sum += (result[j][i] = pr[l++]);
 		result[j][0] = sum;
@@ -151,7 +151,7 @@ HH mxReadHH(const mxArray *mvector)
 	int ii, jj;
 	HH result;
 	result.numdim = mxGetNumberOfElements(mvector);
-	result.eta = mxMalloc(sizeof(double)*(1 + result.numdim));
+	result.eta = (double*)mxMalloc(sizeof(double)*(1 + result.numdim));
 	sum = 0.0;
 	pr = mxGetPr(mvector);
 	for (ii = 0; ii < result.numdim; ii++)
@@ -174,7 +174,7 @@ QQ *mxReadQQVector(HH hh, const mxArray *marray, int maxnum)
 	nn = mxGetN(marray);
 	if (mm != hh.numdim) mexErrMsgTxt("Number of dimensions don't match.");
 	maxnum = max(maxnum, nn);
-	result = mxMalloc(sizeof(QQ)*maxnum);
+	result = (QQ*)mxMalloc(sizeof(QQ)*maxnum);
 	pr = mxGetPr(marray);
 	for (jj = 0; jj < nn; jj++)
 	{

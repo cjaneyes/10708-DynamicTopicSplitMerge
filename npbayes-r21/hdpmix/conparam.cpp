@@ -22,7 +22,7 @@
  *              fields if necessary.  Frees memory allocated.
  */
 
-#include "../utilities/mxutils.c"
+#include "../utilities/mxutils.cpp"
 
 typedef struct {
   double alpha, alphaa, alphab;
@@ -34,7 +34,7 @@ CONPARAM *mxReadConparamVector(mxArray *mcell) {
   CONPARAM *result, *cp;
   int ii, nn;
   nn = mxGetNumberOfElements(mcell);
-  result = mxMalloc(sizeof(CONPARAM)*nn);
+  result = (CONPARAM*)mxMalloc(sizeof(CONPARAM)*nn);
   for ( ii = 0 ; ii < nn ; ii++ ) {
     mstruct = mxGetCell(mcell,ii);
     cp  = result + ii;

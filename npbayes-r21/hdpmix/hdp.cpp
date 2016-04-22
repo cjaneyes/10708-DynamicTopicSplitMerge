@@ -68,11 +68,11 @@
 
 
 #include <math.h>
-#include "../utilities/mxutils.c"
-#include "../utilities/randutils.c"
-#include "dp.c"
-#include "base.c"
-#include "conparam.c"
+#include "../utilities/mxutils.cpp"
+#include "../utilities/randutils.cpp"
+#include "dp.cpp"
+#include "base.cpp"
+#include "conparam.cpp"
 
 typedef struct
 {
@@ -91,7 +91,7 @@ typedef struct
 HDP *mxReadHDP(const mxArray *mcell, unsigned char bEvo)
 {
 	HDP *result;
-	result = mxMalloc(sizeof(HDP));
+	result = (HDP*)mxMalloc(sizeof(HDP));
 	mxdebug0(1, "Reading HDP.\n");
 	result->numdp = mxReadScalar(mxReadField(mcell, "numdp"));
 	result->numconparam = mxReadScalar(mxReadField(mcell, "numconparam"));
@@ -107,7 +107,7 @@ HDP *mxReadHDP(const mxArray *mcell, unsigned char bEvo)
 	result->dp = mxReadDPVector(mxReadField(mcell, "dp"),
 		result->dpstate, result->base->maxclass);
 	result->conparam = mxReadConparamVector(mxReadField(mcell, "conparam"));
-	result->clik = mxMalloc(sizeof(double)*result->base->maxclass);
+	result->clik = (double*)mxMalloc(sizeof(double)*result->base->maxclass);
     result->alphak = 1;
 	return result;
 }
@@ -130,7 +130,7 @@ void mxWriteHDP(mxArray *result, HDP *hdp, unsigned char bEvo)
 /***************************************************************************/
 #define hdp_extendclass(pointer,start,size,type,zero) { \
   type *pp, *pe; \
-  pointer = mxRealloc(pointer, sizeof(type)*size); \
+  pointer = (type*)mxRealloc(pointer, sizeof(type)*size); \
   pp = pointer + start; \
   pe = pointer + size; \
     while ( pp < pe ) { *pp = zero; pp++; } \
@@ -202,7 +202,7 @@ int hdp_addclass(HDP *hdp, unsigned char bEvo)
 		hdp_extendclass(hdp->clik, numclass + 1, maxclass, double, 0.0);
 		hdp_extendclass(base->beta, numclass + 1, maxclass, double, 0.0);
 		if (bEvo)
-			hdp_extendclass(base->lambda, base->old_numclass, maxclass, double, 0.0);
+			hdp_extendclass(base->lambda, base->old_numclass, maxclass, LL, 0);
 		for (jj = 0; jj < numdp; jj++)
 		{
 			dp = alldp + jj;
@@ -590,7 +590,7 @@ void hdp_randdatacc(HDP *hdp, int jj, unsigned char bEvo)
 		marglikelihoods(clik, hh, numclass + 1, classqq, ss);
 		for (cc = 0; cc <= numclass; cc++)
 			//clik[cc] *= classnd[cc] + alpha*beta[cc];
-            clik[cc] += log_sum(log(classnd[cc]), log(alpha)+log(beta[cc]));
+            clik[cc] += log_sum(log((double)classnd[cc]), log(alpha)+log(beta[cc]));
 		mxdebugarray(3, "  clik", "%1.3g", clik, numclass + 1);
 
         log_normalize(clik, numclass + 1);
@@ -697,8 +697,8 @@ void hdp_dpactivate(HDP *hdp, int jj)
 	mxdebug1(1, "Activating DP %d.\n", jj);
 	if (dpstate[jj] == HELDOUT)
 	{
-		dp->classnd = classnd = mxMalloc(sizeof(int)*maxclass);
-		dp->classnt = classnt = mxMalloc(sizeof(int)*maxclass);
+		dp->classnd = classnd = (int*)mxMalloc(sizeof(int)*maxclass);
+		dp->classnt = classnt = (int*)mxMalloc(sizeof(int)*maxclass);
 		for (cc = 0; cc < maxclass; cc++)
 		{
 			classnd[cc] = 0;
@@ -709,7 +709,7 @@ void hdp_dpactivate(HDP *hdp, int jj)
 		hh = base->hh;
 		classqq = base->classqq;
 		datass = dp->datass;
-		dp->datacc = datacc = mxMalloc(sizeof(int)*numdata);
+		dp->datacc = datacc = (int*)mxMalloc(sizeof(int)*numdata);
 		for (ii = 0; ii < numdata; ii++)
 		{
 			datacc[ii] = cc = randuniform(numclass);
@@ -733,7 +733,7 @@ void hdp_dpactivate(HDP *hdp, int jj)
 	conparam = hdp->conparam;
 	cp = hdp->cpindex[jj];
 	dp->alpha = conparam[cp].alpha;
-	dp->beta = beta = mxMalloc(sizeof(double)*maxclass);
+	dp->beta = beta = (double*)mxMalloc(sizeof(double)*maxclass);
 	for (cc = 0; cc < maxclass; cc++)
 		beta[cc] = 0.0;
 	hdp_randbeta(hdp, jj);
