@@ -65,7 +65,9 @@ BASE *mxReadBase(mxArray *mstruct, unsigned char bEvo)
         for(ii = 0; ii < maxclass; ii++)
         {
 			result->lambda[ii] = mxMalloc(sizeof(double) * old_numclass);
-			memset(result->lambda[ii], 0, sizeof(double) * old_numclass);
+			int jj;
+            for(jj = 0;jj < old_numclass;jj++)
+                result->lambda[jj] = 1.0 / old_numclass;
         }
 	}
 

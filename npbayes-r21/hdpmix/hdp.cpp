@@ -81,6 +81,7 @@ typedef struct
 	DP *dp; /* in top down order! */
 	CONPARAM *conparam;
 	double *clik;
+    double *alphak;
 	int *dpstate, *ppindex, *cpindex, *ttindex;
 } HDP;
 
@@ -107,6 +108,7 @@ HDP *mxReadHDP(const mxArray *mcell, unsigned char bEvo)
 		result->dpstate, result->base->maxclass);
 	result->conparam = mxReadConparamVector(mxReadField(mcell, "conparam"));
 	result->clik = mxMalloc(sizeof(double)*result->base->maxclass);
+    result->alphak = 1;
 	return result;
 }
 
@@ -404,12 +406,37 @@ void hdp_randbeta_bEvo(HDP *hdp, int jj)
 
 void hdp_randalphak(HDP *hdp)
 {
-
+    
 }
 
 void hdp_randlambda(HDP *hdp)
 {
+    BASE *base;
+    DP *alldp;
+	int numclass, old_numclass;
+	double alpha, *alphak, *beta, *old_beta;
+    LL *lambda;
+    
 
+	int cc, kk;
+
+	base = hdp->base;
+    alldp = hdp->alldp; 
+	numclass = base->numclass;
+    old_numclass = base->old_numclass;
+    alpha = alldp[1].alpha;
+    alphak = hdp->alphak;
+    beta = alldp[1].beta;
+    old_beta = base->old_beta;
+    lambda = base->lambda;
+    
+    mxdebug0(2, "sample lambda. ");
+    for(cc = 0; cc <= numclass; cc++)
+    {
+        for(kk = 0;kk < old_numclass;kk++)
+            lambda[cc][kk] = gamma_distribution(alphak[cc], (-1) * old_beta[kk] * log(beta[kk]));
+        mxdebugarray(3, "\n  lambda", "%1.3g", hdp->base->lambda[cc], old_numclass);
+    }
 }
 
 void hdp_randbeta(HDP *hdp, int jj)
