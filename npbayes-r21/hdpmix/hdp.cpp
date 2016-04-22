@@ -67,12 +67,15 @@
  */
 
 
+#include <random>
 #include <math.h>
 #include "../utilities/mxutils.cpp"
 #include "../utilities/randutils.cpp"
 #include "dp.cpp"
 #include "base.cpp"
 #include "conparam.cpp"
+
+using namespace std;
 
 typedef struct
 {
@@ -81,7 +84,7 @@ typedef struct
 	DP *dp; /* in top down order! */
 	CONPARAM *conparam;
 	double *clik;
-    double *alphak;
+    double alphak;
 	int *dpstate, *ppindex, *cpindex, *ttindex;
 } HDP;
 
@@ -414,14 +417,14 @@ void hdp_randlambda(HDP *hdp)
     BASE *base;
     DP *alldp;
 	int numclass, old_numclass;
-	double alpha, *alphak, *beta, *old_beta;
+	double alpha, alphak, *beta, *old_beta;
     LL *lambda;
     
 
 	int cc, kk;
 
 	base = hdp->base;
-    alldp = hdp->alldp; 
+    alldp = hdp->dp; 
 	numclass = base->numclass;
     old_numclass = base->old_numclass;
     alpha = alldp[1].alpha;
@@ -430,11 +433,17 @@ void hdp_randlambda(HDP *hdp)
     old_beta = base->old_beta;
     lambda = base->lambda;
     
+	std::default_random_engine generator;
+	
+
     mxdebug0(2, "sample lambda. ");
     for(cc = 0; cc <= numclass; cc++)
     {
-        for(kk = 0;kk < old_numclass;kk++)
-            lambda[cc][kk] = gamma_distribution(alphak[cc], (-1) * old_beta[kk] * log(beta[kk]));
+		for (kk = 0; kk < old_numclass; kk++)
+		{
+			std::gamma_distribution<double> distribution(alphak, (-1) * old_beta[kk] * log(beta[kk])*alpha);
+			lambda[cc][kk] = distribution(generator);
+		}
         mxdebugarray(3, "\n  lambda", "%1.3g", hdp->base->lambda[cc], old_numclass);
     }
 }
@@ -649,8 +658,12 @@ void hdp_iterate(HDP *hdp, double *iterlik,
 			}
 		}
 		mxdebug0(2, "\n");
-		hdp_randalphak(hdp);
-		hdp_randlambda(hdp);
+		if (bEvo)
+		{
+			hdp_randalphak(hdp);
+			hdp_randlambda(hdp);
+		}
+
 		for (jj = 0; jj < numdp; jj++)
 		{
 			if (dpstate[jj] == ACTIVE)
