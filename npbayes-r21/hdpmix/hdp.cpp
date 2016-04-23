@@ -71,6 +71,7 @@
 #include <math.h>
 #include "../utilities/mxutils.cpp"
 #include "../utilities/randutils.cpp"
+#include "../utilities/SliceSampler.cpp"
 #include "dp.cpp"
 #include "base.cpp"
 #include "conparam.cpp"
@@ -397,11 +398,13 @@ void hdp_randbeta_bEvo(HDP *hdp, int jj)
     for (cc = 0; cc <= numclass; cc++)
     {
         double beta_k = 0;
+        double sum_cc = 0;
         for(kk = 0; kk < old_numclass;kk++)
         {
             beta_k += lambda[cc][kk] * old_beta[kk];
+            sum_cc += lambda[cc][kk];
         }
-		clik[cc] = classnd[cc] + alpha*beta_k;
+		clik[cc] = classnd[cc] + alpha*beta_k / sum_cc;
     }
 	randdir(dp->beta, clik, numclass + 1, 1);
 	mxdebugarray(3, "\n  beta", "%1.3g", dp->beta, numclass + 1);
@@ -432,18 +435,20 @@ void hdp_randlambda(HDP *hdp)
     beta = alldp[1].beta;
     old_beta = base->old_beta;
     lambda = base->lambda;
-    
-	std::default_random_engine generator;
-	
 
     mxdebug0(2, "sample lambda. ");
     for(cc = 0; cc <= numclass; cc++)
     {
+        double sum = 0;
 		for (kk = 0; kk < old_numclass; kk++)
-		{
-			std::gamma_distribution<double> distribution(alphak, (-1) * old_beta[kk] * log(beta[kk])*alpha);
-			lambda[cc][kk] = distribution(generator);
-		}
+            sum += lambda[cc][kk];
+        for (kk = 0; kk < old_numclass; kk++)
+        {
+            sum -= lambda[cc][kk];
+            lambda[cc][kk] = slice_sampling(f, 0, 10000, 100, kk, sum, lambda[cc], alphak, beta[cc], old_beta, old_numclass);
+            
+            sum += lambda[cc][kk];
+        }
         mxdebugarray(3, "\n  lambda", "%1.3g", hdp->base->lambda[cc], old_numclass);
     }
 }
