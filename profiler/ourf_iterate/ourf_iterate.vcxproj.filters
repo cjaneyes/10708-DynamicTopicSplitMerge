@@ -21,7 +21,7 @@
     <None Include="mex-R2015a-x64.props" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\npbayes-r21\distributions\ourf\hdp_ourf_iterate.c">
+    <ClCompile Include="..\..\npbayes-r21\distributions\ourf\hdp_ourf_iterate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

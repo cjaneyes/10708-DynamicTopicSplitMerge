@@ -73,11 +73,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\npbayes-r21\distributions\ourf\hdp_ourf_iterate.c" />
+    <None Include="mex.def" />
+    <None Include="mex-R2015a-x64.props">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="mex.def" />
-    <None Include="mex-R2015a-x64.props" />
+    <ClCompile Include="..\..\npbayes-r21\distributions\ourf\hdp_ourf_iterate.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

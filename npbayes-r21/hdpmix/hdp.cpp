@@ -672,13 +672,13 @@ void hdp_iterate(HDP *hdp, double *iterlik,
 				else hdp_randbeta(hdp, jj);
 		}
 
-		/* delete empty classes, only after randclassnt, randbeta for consistency */
-		base = hdp->base;
-		classqq = base->classqq;
-		for (cc = base->numclass - 1; cc >= 0; cc--)
-		{
-			if (numitems(classqq[cc]) == 0) hdp_delclass(hdp, cc);
-		}
+		///* delete empty classes, only after randclassnt, randbeta for consistency */
+		//base = hdp->base;
+		//classqq = base->classqq;
+		//for (cc = base->numclass - 1; cc >= 0; cc--)
+		//{
+		//	if (numitems(classqq[cc]) == 0) hdp_delclass(hdp, cc);
+		//}
 
 		if (doconparam > 0) hdp_randconparam(hdp, doconparam);
 

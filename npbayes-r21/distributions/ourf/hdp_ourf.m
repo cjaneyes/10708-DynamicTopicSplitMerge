@@ -20,11 +20,7 @@ if bEvo
     % Record old statistics
     [old_classnt, old_beta, old_numclass] = hdp_record(sample);
     for t = 2:T
-        hdp = hdp_init(func, [0 1], [1 1], hh, alphaa, alphab); 
         hdp = hdp_setdata(hdp, 2, trainss(t));
-        
-        % random initialization
-        hdp = dp_activate(hdp, [1 2], numclass);
         hdp.base.old_classnt = old_classnt;
         hdp.base.old_beta = old_beta;
         hdp.base.old_numclass = old_numclass;
