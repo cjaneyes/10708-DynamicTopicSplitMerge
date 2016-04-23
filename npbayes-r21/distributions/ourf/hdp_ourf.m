@@ -20,7 +20,9 @@ if bEvo
     % Record old statistics
     [old_classnt, old_beta, old_numclass] = hdp_record(sample);
     for t = 2:T
+        hdp.dpstate(2) = 0; % HELDOUT
         hdp = hdp_setdata(hdp, 2, trainss(t));
+        hdp = dp_activate(hdp, 2, 0);
         hdp.base.old_classnt = old_classnt;
         hdp.base.old_beta = old_beta;
         hdp.base.old_numclass = old_numclass;

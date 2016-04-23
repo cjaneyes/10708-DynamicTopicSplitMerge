@@ -13,7 +13,7 @@ end
 HELDOUT = 0;
 
 for jj = 1:length(dpindex)
-  if hdp.dpstate(jj) ~= HELDOUT
+  if hdp.dpstate(dpindex(jj)) ~= HELDOUT
     error('Cannot set data for DPs that are not held out');
   end
   hdp.dp{dpindex(jj)}.numdata = size(datass{jj},2);
