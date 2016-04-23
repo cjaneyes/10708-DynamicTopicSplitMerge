@@ -26,22 +26,28 @@ double slice_sampling(double (*f)(double), double lower, double upper, double si
 	double x_r = (lower - x > sigma) ? x + sigma : upper;
 	
 	for(int i = 0;i < 10;i++)
-	{
-		while(true)
-		{		
-			if(f(x_r) >= y) 
+	{		
+		while(f(x_r) >= y) 
+		{
+			double new_r = (x_l - x) * 2 + x;
+			if (new_r > upper)
 			{
-				double new_r = (x_l - x) * 2 + x;
-				x_r = (new_r <= upper) ? new_r : upper;
+				x_r = upper;
+				break;
 			}
-			else if(f(x_l) >= y)
-			{
-				double new_l = x - (x - x_l) * 2;
-				x_l = (new_l >= lower) ? new_l : lower;
-			} 
-			else break;
+			x_r = new_r;
 		}
-		//cout << f(x_l) << " " << f(x_r) << " " << y << endl;
+		while (f(x_l) >= y)
+		{
+			double new_l = x - (x - x_l) * 2;
+			if (new_l < lower)
+			{
+				x_r = lower;
+				break;
+			}
+			x_l = new_l;
+		} 
+
 		while(true)
 		{
 			double new_x = uniform(x_l, x_r);
@@ -81,4 +87,5 @@ int main()
 	var /= 100;
 
 	cout << "Mean: " << avg << ", Variance: " << var << endl;
+	cout << f(RAND_MAX) << endl;
 }
