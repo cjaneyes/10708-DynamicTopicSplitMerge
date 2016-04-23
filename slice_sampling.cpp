@@ -25,7 +25,7 @@ double slice_sampling(double (*f)(double), double lower, double upper, double si
 	double x_l = (x - lower > sigma) ? x - sigma : upper;
 	double x_r = (lower - x > sigma) ? x + sigma : upper;
 	
-	for(int i= 0;i < 10;i++)
+	for(int i = 0;i < 10;i++)
 	{
 		while(true)
 		{		
@@ -33,14 +33,13 @@ double slice_sampling(double (*f)(double), double lower, double upper, double si
 			{
 				double new_r = (x_l - x) * 2 + x;
 				x_r = (new_r <= upper) ? new_r : upper;
-				continue;
 			}
-			if(f(x_l) >= y)
+			else if(f(x_l) >= y)
 			{
 				double new_l = x - (x - x_l) * 2;
 				x_l = (new_l >= lower) ? new_l : lower;
 			} 
-			break;
+			else break;
 		}
 		//cout << f(x_l) << " " << f(x_r) << " " << y << endl;
 		while(true)
