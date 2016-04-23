@@ -27,9 +27,19 @@ double slice_sampling(double (*f)(double), double lower, double upper, double si
 	
 	for(int i = 0;i < 10;i++)
 	{		
+		while (f(x_l) >= y)
+		{
+			double new_l = x - (x - x_l) * 2;
+			if (new_l < lower)
+			{
+				x_l = lower;
+				break;
+			}
+			x_l = new_l;
+		} 
 		while(f(x_r) >= y) 
 		{
-			double new_r = (x_l - x) * 2 + x;
+			double new_r = (x_r - x) * 2 + x;
 			if (new_r > upper)
 			{
 				x_r = upper;
@@ -37,16 +47,6 @@ double slice_sampling(double (*f)(double), double lower, double upper, double si
 			}
 			x_r = new_r;
 		}
-		while (f(x_l) >= y)
-		{
-			double new_l = x - (x - x_l) * 2;
-			if (new_l < lower)
-			{
-				x_r = lower;
-				break;
-			}
-			x_l = new_l;
-		} 
 
 		while(true)
 		{
@@ -74,7 +74,7 @@ int main()
 	double sample[100];
 	for(int i = 0;i < 100;i++)
 	{
-		sample[i] = slice_sampling(f, (-1) * (double) RAND_MAX / 10000, (double) RAND_MAX/ 10000, 100);
+		sample[i] = slice_sampling(f, (-1) * (double) RAND_MAX / 10000, (double) RAND_MAX/ 10000, 10);
 		cout << sample[i] << endl;
 	}
 
