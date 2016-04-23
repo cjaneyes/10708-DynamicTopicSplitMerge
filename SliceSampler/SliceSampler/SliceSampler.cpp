@@ -26,7 +26,7 @@ double slice_sampling(double(*f)(double), double lower, double upper, double sig
 	{
 		x = uniform(lower, upper);	
 		y = uniform(0, f(x));
-		cout << y << endl;
+		//cout << y << endl;
 	}
 	double x_l = (x - lower > sigma) ? x - sigma : lower;
 	double x_r = (lower - x > sigma) ? x + sigma : upper;
