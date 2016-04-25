@@ -4,6 +4,7 @@
 #include <vector>
 #include <numeric>
 #include <random>
+#include <mex.h>
 
 using namespace std;
 

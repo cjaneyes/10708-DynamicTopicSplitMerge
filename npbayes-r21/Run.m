@@ -25,7 +25,7 @@ for y = 1:nYear
     mn = load(['../data/' fname '.meta']);
     ijv = load(['../data/' fname '.sparse']);
     ourdata{y} = full(sparse(ijv(:, 2), ijv(:, 1), ijv(:, 3), mn(2), mn(1)));
-    ourdata{y} = ourdata{y}(1:3, 1:3);
+%     ourdata{y} = ourdata{y}(1:3, 1:3);
 end
 
 if bEvo
@@ -37,12 +37,12 @@ else
 end
 
 % Vocabulary size
-lenV = 3; % mn(2);
+lenV = mn(2); % 3
 
 %% Setup parameters
 
 % iterations and sample extraction
-numburnin   = 10000;
+numburnin   = 100;
 numsample   = 1;
 numinterval = 5;
 
@@ -62,7 +62,7 @@ hh = ones(lenV, 1);
 % expected number of classes/mixtures/topics
 numclass = 2;
 
-verbosity = 0;
+verbosity = 4;
 
 %% Sampling
 
