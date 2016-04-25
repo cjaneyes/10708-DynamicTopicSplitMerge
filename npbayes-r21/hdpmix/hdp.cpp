@@ -69,6 +69,7 @@
 
 #include <random>
 #include <math.h>
+#include <climits>
 #include "../utilities/mxutils.cpp"
 #include "../utilities/randutils.cpp"
 #include "../utilities/SliceSampler.cpp"
@@ -603,8 +604,12 @@ void hdp_randdatacc(HDP *hdp, int jj, unsigned char bEvo)
 
 		marglikelihoods(clik, hh, numclass + 1, classqq, ss);
 		for (cc = 0; cc <= numclass; cc++)
-			//clik[cc] *= classnd[cc] + alpha*beta[cc];
-            clik[cc] += log_sum(log((double)classnd[cc]), log(alpha)+log(beta[cc]));
+        {
+            //clik[cc] *= classnd[cc] + alpha*beta[cc];
+            //clik[cc] += log_sum(log((double)classnd[cc]), log(alpha)+log(beta[cc]));
+            if(classnd[cc] == 0 && beta[cc] == 0) clik[cc] = -1 * numeric_limits<double>::infinity();
+            else clik[cc] += log(classnd[cc] + alpha*beta[cc]);
+        }	
 		mxdebugarray(3, "  clik", "%1.3g", clik, numclass + 1);
 
         log_normalize(clik, numclass + 1);
