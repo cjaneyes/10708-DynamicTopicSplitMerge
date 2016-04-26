@@ -17,7 +17,7 @@ end
 %% Read preprocessed data
 
 nYear = 2;
-startYear = 1995;
+startYear = 1996;
 
 ourdata = cell(nYear, 1);
 for y = 1:nYear
@@ -38,6 +38,7 @@ end
 
 % Vocabulary size
 lenV = mn(2); % 3
+% lenV = 3;
 
 %% Setup parameters
 
@@ -60,13 +61,13 @@ alphab = 1;
 hh = ones(lenV, 1);
 
 % expected number of classes/mixtures/topics
-numclass = 2;
+numclass = 10;
 
-verbosity = 4;
+verbosity = 1;
 
 %% Sampling
 
 [hdp, sample, lik] = hdp_ourf(bEvo, hh, alphaa, alphab, numclass, ...
     trainss, numburnin, numsample, numinterval, doconparam, verbosity);
 
-
+saveresult(sample, startYear, '../out');

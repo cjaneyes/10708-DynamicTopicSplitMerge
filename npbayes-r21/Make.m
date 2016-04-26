@@ -1,4 +1,4 @@
-bDebugMex = 1;
+bDebugMex = 0;
 
 cd distributions/ourf;
 try
