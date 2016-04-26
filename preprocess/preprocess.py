@@ -11,10 +11,12 @@ from collections import defaultdict
 import re
 from sets import Set
 from stemming.porter2 import stem
+# from nltk.stem import WordNetLemmatizer
 
 #  field = ["#*", "#@", "#year", "#conf", "#citation", "#index", "#arnetid", "#%", "#!", "holder"]
 field = ["#year", "#index", "#conf", "#!", "holder"]
-year = ["year1995", "year1996"]
+year = ["year1996", "year1997", "year1998", "year1999", "year2000"]
+# year = ["year2005", "year2001", "year2002", "year2003", "year2004"]
 
 def preprocess(lines, cnt):
     item = {}
@@ -96,18 +98,20 @@ if __name__ == "__main__":
     #                 output.write(content+" ")
     #             # output.write("\n")
     #         output.write("\n")
-    #     output.close()
+        # output.close()
 
 
     filePath = "/Users/Jing/Documents/16Spring/10708/Project/pgm/data/RawYear/"
     outputPath = "/Users/Jing/Documents/16Spring/10708/Project/pgm/data/Year/"
     dirs = os.listdir(filePath)
     stopwordList = readStopword("/Users/Jing/Documents/16Spring/10708/Project/pgm/data/stopword.list")
+    # print stopwordList
     isNumeric = re.compile(r'.*[0-9].*')
     year_doc_list = defaultdict(list)
     vocab = defaultdict(int)
     vocab_inex = 1
     vocab_remap = defaultdict(str)
+    # wnl = WordNetLemmatizer()
 
     for fn in dirs:
         if not fn in year:
@@ -121,14 +125,16 @@ if __name__ == "__main__":
             if line == "\n":
                 continue
             count += 1
-            if count > 2000:
+            if count > 500:
                 break
             content = []
             content_ori = line.strip().split()
             for w in content_ori:
-                if (w in stopwordList) or (isNumeric.match(w)):
+                w_ = stem(w)
+                if w_ in stopwordList:
                     continue
-                w = stem(w)
+                if isNumeric.match(w_):
+                    continue
                 content.append(w)
                 if not vocab.has_key(w):
                     vocab[w] = vocab_inex
@@ -138,8 +144,8 @@ if __name__ == "__main__":
         f.close()
         year_doc_list[fn] = docList
 
-    for k, v in vocab_remap.items():
-        print k, v
+    # for k, v in vocab_remap.items():
+    #     print k, v
 
     for year, docList in year_doc_list.items():
         f_info = open(outputPath+year+".meta", 'w')

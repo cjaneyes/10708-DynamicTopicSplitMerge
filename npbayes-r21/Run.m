@@ -16,8 +16,8 @@ end
 
 %% Read preprocessed data
 
-nYear = 2;
-startYear = 1996;
+nYear = 5;
+startYear = 2001;
 
 ourdata = cell(nYear, 1);
 for y = 1:nYear
