@@ -116,8 +116,8 @@ double randgamma(double rr)
 		{
 			xx = pow(drand48(), cc);
 			yy = xx + pow(drand48(), dd);
-			if (yy != 0 && !isnormal(yy))
-				yy = yy;
+			//if (yy != 0 && !isnormal(yy))
+			//	yy = yy;
 			if (yy <= 1.0)
 			{
 				return -log(drand48()) * xx / yy;
@@ -139,8 +139,8 @@ double randgamma(double rr)
 			if (xx >= 0)
 			{
 				zz = 64.0 * ww * ww * ww * vv * vv;
-				if (zz != 0 && !isnormal(zz))
-					zz = zz;
+				//if (zz != 0 && !isnormal(zz))
+				//	zz = zz;
 				if ((zz <= (1.0 - 2.0 * yy * yy / xx)) ||
 					(log(zz) <= 2.0 * (bb * log(xx / bb) - yy)))
 				{
@@ -204,8 +204,8 @@ int randmult(double *pi, int veclength, int skip)
 	piend = pi + veclength*skip;
 	for (pi2 = pi; pi2 < piend; pi2 += skip)
 		sum += *pi2;
-	if (sum != 0 && !isnormal(sum))
-		sum = sum;
+	//if (sum != 0 && !isnormal(sum))
+	//	sum = sum;
 	mass = drand48() * sum;
 	while (pi < piend)
 	{

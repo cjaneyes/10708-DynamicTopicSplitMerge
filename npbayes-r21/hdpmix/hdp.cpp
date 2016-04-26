@@ -464,9 +464,9 @@ void hdp_randlambda(HDP *hdp)
         for (kk = 0; kk < old_numclass; kk++)
         {
             sum -= lambda[cc][kk];
-			array2txt(lambda[cc], old_numclass, "lamda_cc.txt");
-			array2txt(old_beta, old_numclass, "old_beta.txt");
-			array2txt(&beta[cc], 1, "beta_cc.txt");
+			//array2txt(lambda[cc], old_numclass, "lamda_cc.txt");
+			//array2txt(old_beta, old_numclass, "old_beta.txt");
+			//array2txt(&beta[cc], 1, "beta_cc.txt");
             lambda[cc][kk] = slice_sampling(f, 0, 10000, 100, kk, sum, lambda[cc], alphak, beta[cc], old_beta, old_numclass);
             
             sum += lambda[cc][kk];
@@ -499,8 +499,8 @@ void hdp_randbeta(HDP *hdp, int jj)
 	for (cc = 0; cc <= numclass; cc++)
 	{
 		clik[cc] = classnd[cc] + alpha*beta[cc];
-		if (!isnormal(clik[cc]))
-			alpha = alpha;
+		//if (!isnormal(clik[cc]))
+		//	alpha = alpha;
 	}
 	mxdebugarray(3, "\n  beta clik", "%g", clik, numclass + 1);
 	randdir(dp->beta, clik, numclass + 1, 1);
@@ -636,10 +636,10 @@ void hdp_randdatacc(HDP *hdp, int jj, unsigned char bEvo)
             //clik[cc] += log_sum(log((double)classnd[cc]), log(alpha)+log(beta[cc]));
             if(classnd[cc] == 0 && beta[cc] == 0) clik[cc] = -1 * numeric_limits<double>::infinity();
             else clik[cc] += log(classnd[cc] + alpha*beta[cc]);
-			if (clik[cc] != 0 && !isnormal(clik[cc]))
-			{
-				double a = exp(-1 * numeric_limits<double>::infinity());
-			}
+			//if (clik[cc] != 0 && !isnormal(clik[cc]))
+			//{
+			//	double a = exp(-1 * numeric_limits<double>::infinity());
+			//}
         }
 		mxdebugarray(3, "  clik", "%g", clik, numclass + 1);
 		//mxdebugarray(3, "  clik", "%1.3g", clik, numclass + 1);
