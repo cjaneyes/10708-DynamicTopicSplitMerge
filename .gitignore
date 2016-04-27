@@ -164,3 +164,4 @@ $RECYCLE.BIN/
 # Custom ignores
 data/
 out/
+hdp/
