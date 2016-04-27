@@ -86,7 +86,7 @@ typedef struct
 	DP *dp; /* in top down order! */
 	CONPARAM *conparam;
 	double *clik;
-    double alphak;
+	double alphak;
 	int *dpstate, *ppindex, *cpindex, *ttindex;
 } HDP;
 
@@ -131,7 +131,7 @@ HDP *mxReadHDP(const mxArray *mcell, unsigned char bEvo)
 		result->dpstate, result->base->maxclass);
 	result->conparam = mxReadConparamVector(mxReadField(mcell, "conparam"));
 	result->clik = (double*)mxMalloc(sizeof(double)*result->base->maxclass);
-    result->alphak = 1;
+	result->alphak = 1;
 	return result;
 }
 
@@ -156,7 +156,7 @@ void mxWriteHDP(mxArray *result, HDP *hdp, unsigned char bEvo)
   pointer = (type*)mxRealloc(pointer, sizeof(type)*size); \
   pp = pointer + start; \
   pe = pointer + size; \
-    while ( pp < pe ) { *pp = zero; pp++; } \
+      while ( pp < pe ) { *pp = zero; pp++; } \
 }
 int hdp_addclass(HDP *hdp, unsigned char bEvo)
 {
@@ -250,7 +250,7 @@ int hdp_addclass(HDP *hdp, unsigned char bEvo)
   pp     = array + start; \
   pe     = array + size; \
   tmpvar = *pp; \
-    while ( pp < pe ) { *pp = *(pp+1); pp++; } \
+      while ( pp < pe ) { *pp = *(pp+1); pp++; } \
   *pe = tmpvar; \
 }
 int hdp_delclass(HDP *hdp, int cc)
@@ -389,21 +389,21 @@ void hdp_randconparam(HDP *hdp, int numiter)
 /***************************************************************************/
 void hdp_randbeta_bEvo(HDP *hdp, int jj)
 {
-    BASE *base;
+	BASE *base;
 	DP *alldp, *dp;
 	int *classnd, numclass, old_numclass;
 	double alpha, *beta, *old_beta;
-    LL *lambda;
-    
+	LL *lambda;
+
 
 	int cc, pp, kk;
 	double *clik;
 
 	base = hdp->base;
-    lambda = base->lambda;
-    old_beta = base->old_beta;
+	lambda = base->lambda;
+	old_beta = base->old_beta;
 	numclass = base->numclass;
-    old_numclass = base->old_numclass;
+	old_numclass = base->old_numclass;
 	alldp = hdp->dp;
 	dp = alldp + jj;
 	clik = hdp->clik;
@@ -413,66 +413,66 @@ void hdp_randbeta_bEvo(HDP *hdp, int jj)
 	alpha = dp->alpha;
 	pp = hdp->ppindex[jj];
 	beta = (pp == -1) ? base->beta : alldp[pp].beta;
-    
-    for (cc = 0; cc <= numclass; cc++)
-    {
-        double beta_k = 0;
-        double sum_cc = 0;
-        for(kk = 0; kk < old_numclass;kk++)
-        {
-            beta_k += lambda[cc][kk] * old_beta[kk];
-            sum_cc += lambda[cc][kk];
-        }
+
+	for (cc = 0; cc <= numclass; cc++)
+	{
+		double beta_k = 0;
+		double sum_cc = 0;
+		for (kk = 0; kk < old_numclass; kk++)
+		{
+			beta_k += lambda[cc][kk] * old_beta[kk];
+			sum_cc += lambda[cc][kk];
+		}
 		clik[cc] = classnd[cc] + alpha*beta_k / sum_cc;
-    }
+	}
 	randdir(dp->beta, clik, numclass + 1, 1);
 	mxdebugarray(3, "\n  beta", "%1.3g", dp->beta, numclass + 1);
 }
 
 void hdp_randalphak(HDP *hdp)
 {
-    
+
 }
 
 void hdp_randlambda(HDP *hdp)
 {
-    BASE *base;
-    DP *alldp;
+	BASE *base;
+	DP *alldp;
 	int numclass, old_numclass;
 	double alpha, alphak, *beta, *old_beta;
-    LL *lambda;
-    
+	LL *lambda;
+
 
 	int cc, kk;
 
 	base = hdp->base;
-    alldp = hdp->dp; 
+	alldp = hdp->dp;
 	numclass = base->numclass;
-    old_numclass = base->old_numclass;
-    alpha = alldp[1].alpha;
-    alphak = hdp->alphak;
-    beta = alldp[1].beta;
-    old_beta = base->old_beta;
-    lambda = base->lambda;
+	old_numclass = base->old_numclass;
+	alpha = alldp[1].alpha;
+	alphak = hdp->alphak;
+	beta = alldp[1].beta;
+	old_beta = base->old_beta;
+	lambda = base->lambda;
 
-    mxdebug0(2, "sample lambda. ");
-    for(cc = 0; cc <= numclass; cc++)
-    {
-        double sum = 0;
+	mxdebug0(2, "sample lambda. ");
+	for (cc = 0; cc <= numclass; cc++)
+	{
+		double sum = 0;
 		for (kk = 0; kk < old_numclass; kk++)
-            sum += lambda[cc][kk];
-        for (kk = 0; kk < old_numclass; kk++)
-        {
-            sum -= lambda[cc][kk];
+			sum += lambda[cc][kk];
+		for (kk = 0; kk < old_numclass; kk++)
+		{
+			sum -= lambda[cc][kk];
 			//array2txt(lambda[cc], old_numclass, "lamda_cc.txt");
 			//array2txt(old_beta, old_numclass, "old_beta.txt");
 			//array2txt(&beta[cc], 1, "beta_cc.txt");
-            lambda[cc][kk] = slice_sampling(f, 0, 10000, 100, kk, sum, lambda[cc], alphak, beta[cc], old_beta, old_numclass);
-            
-            sum += lambda[cc][kk];
-        }
-        mxdebugarray(3, "\n  lambda", "%1.3g", hdp->base->lambda[cc], old_numclass);
-    }
+			lambda[cc][kk] = slice_sampling(f, 0, 10000, 100, kk, sum, lambda[cc], alphak, beta[cc], old_beta, old_numclass);
+
+			sum += lambda[cc][kk];
+		}
+		mxdebugarray(3, "\n  lambda", "%1.3g", hdp->base->lambda[cc], old_numclass);
+	}
 }
 
 void hdp_randbeta(HDP *hdp, int jj)
@@ -631,27 +631,28 @@ void hdp_randdatacc(HDP *hdp, int jj, unsigned char bEvo)
 
 		marglikelihoods(clik, hh, numclass + 1, classqq, ss);
 		for (cc = 0; cc <= numclass; cc++)
-        {
-            //clik[cc] *= classnd[cc] + alpha*beta[cc];
-            //clik[cc] += log_sum(log((double)classnd[cc]), log(alpha)+log(beta[cc]));
-            if(classnd[cc] == 0 && beta[cc] == 0) clik[cc] = -1 * numeric_limits<double>::infinity();
-            else clik[cc] += log(classnd[cc] + alpha*beta[cc]);
+		{
+			//clik[cc] *= classnd[cc] + alpha*beta[cc];
+			//clik[cc] += log_sum(log((double)classnd[cc]), log(alpha)+log(beta[cc]));
+			if (classnd[cc] == 0 && beta[cc] == 0) clik[cc] = -1 * numeric_limits<double>::infinity();
+			else clik[cc] += log(classnd[cc] + alpha*beta[cc]);
 			//if (clik[cc] != 0 && !isnormal(clik[cc]))
 			//{
 			//	double a = exp(-1 * numeric_limits<double>::infinity());
 			//}
-        }
+		}
 		mxdebugarray(3, "  clik", "%g", clik, numclass + 1);
 		//mxdebugarray(3, "  clik", "%1.3g", clik, numclass + 1);
 
-        log_normalize(clik, numclass + 1);
-        for (cc = 0; cc <= numclass; cc++)
-            clik[cc] = exp(clik[cc]);
+		log_normalize(clik, numclass + 1);
+		for (cc = 0; cc <= numclass; cc++)
+			clik[cc] = exp(clik[cc]);
 		datacc[ii] = cc = randmult(clik, numclass + 1, 1);
 		//datacc[ii] = cc = randuniform(numclass + 1);
 		//cc = datacc[ii];
-		if (cc < 0 || cc > numclass)
-			cc = cc;
+		//double t = clik[numclass];
+		//if (cc < 0 || cc > numclass)
+		//	cc = cc;
 
 
 		mxdebug1(3, "add data. newcc %d. ", cc);
@@ -719,7 +720,8 @@ void hdp_iterate(HDP *hdp, double *iterlik,
 		classqq = base->classqq;
 		for (cc = base->numclass - 1; cc >= 0; cc--)
 		{
-			if (numitems(classqq[cc]) == 0) hdp_delclass(hdp, cc);
+			if (numitems(classqq[cc]) == 0)
+				hdp_delclass(hdp, cc);
 		}
 
 		if (doconparam > 0) hdp_randconparam(hdp, doconparam);
