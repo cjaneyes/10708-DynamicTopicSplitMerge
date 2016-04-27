@@ -17,7 +17,7 @@ end
 %% Read preprocessed data
 
 nYear = 5;
-startYear = 2001;
+startYear = 2006;
 
 ourdata = cell(nYear, 1);
 for y = 1:nYear
@@ -25,7 +25,7 @@ for y = 1:nYear
     mn = load(['../data/' fname '.meta']);
     ijv = load(['../data/' fname '.sparse']);
     ourdata{y} = full(sparse(ijv(:, 2), ijv(:, 1), ijv(:, 3), mn(2), mn(1)));
-%     ourdata{y} = ourdata{y}(1:3, 1:3);
+%     ourdata{y} = ourdata{y}(1:300, 1:300);
 end
 
 if bEvo
@@ -43,7 +43,7 @@ lenV = mn(2); % 3
 %% Setup parameters
 
 % iterations and sample extraction
-numburnin   = 100;
+numburnin   = 1000;
 numsample   = 1;
 numinterval = 5;
 
@@ -59,15 +59,19 @@ alphab = 1;
 
 % H for G0
 hh = ones(lenV, 1);
+% hh = ones(300, 1);
 
 % expected number of classes/mixtures/topics
-numclass = 10;
+numclass = 8;
 
-verbosity = 1;
+verbosity = 2;
 
 %% Sampling
 
+tStart = tic;
 [hdp, sample, lik] = hdp_ourf(bEvo, hh, alphaa, alphab, numclass, ...
     trainss, numburnin, numsample, numinterval, doconparam, verbosity);
+tElapsed = toc(tStart);
+fprintf('The sampling process completes in %gs.\n', tElapsed);
 
 saveresult(sample, startYear, '../out');
