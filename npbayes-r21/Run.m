@@ -17,7 +17,7 @@ end
 %% Read preprocessed data
 
 nYear = 5;
-startYear = 2006;
+startYear = 1996;
 
 ourdata = cell(nYear, 1);
 for y = 1:nYear
@@ -62,7 +62,7 @@ hh = ones(lenV, 1);
 % hh = ones(300, 1);
 
 % expected number of classes/mixtures/topics
-numclass = 8;
+numclass = 6;
 
 verbosity = 2;
 
@@ -75,5 +75,6 @@ tElapsed = toc(tStart);
 fprintf('The sampling process completes in %gs.\n', tElapsed);
 
 %% Saving result
-save('../out/raw.mat', 'hdp', 'sample');
+
 saveresult(sample, startYear, '../out');
+save('../out/raw.mat', 'hdp', 'sample');
