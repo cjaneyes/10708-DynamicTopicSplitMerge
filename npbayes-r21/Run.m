@@ -74,4 +74,6 @@ tStart = tic;
 tElapsed = toc(tStart);
 fprintf('The sampling process completes in %gs.\n', tElapsed);
 
+%% Saving result
+save('../out/raw.mat', 'hdp', 'sample');
 saveresult(sample, startYear, '../out');

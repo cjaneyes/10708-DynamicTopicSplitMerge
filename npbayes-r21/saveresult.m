@@ -21,7 +21,7 @@ for i = 1:n
     fclose(fileID);
     if i ~= 1
         lambda = sample{i}.lambda;
-        lambda = lambda ./ repmat(sum(lambda, 2), 1, size(lambda, 2));
+        lambda = lambda ./ repmat(sum(lambda, 1),  size(lambda, 1), 1);
         dlmwrite(fullfile(outDir, sprintf('lambda_%d.txt', startYear + i - 1)), lambda, '\t');
     end
 end
