@@ -1,3 +1,5 @@
+This is the main page for our cmu-10708 Probabilistic Graphical Model project.
+
 HDP Code:
 http://www.cs.berkeley.edu/~jordan/hdp/
 Version 2
